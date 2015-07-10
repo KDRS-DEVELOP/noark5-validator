@@ -1,5 +1,5 @@
 <?php
-require_once ('models/noark5/v31/ArkivUttrekk.php');
+require_once ('models/noark5/v31/ArkivUttrekkDetails.php');
 require_once ('models/noark5/v31/arkivuttrekkXML/ExtractionInfoArkivuttrekk.php');
 
 /*
@@ -11,25 +11,31 @@ require_once ('models/noark5/v31/arkivuttrekkXML/ExtractionInfoArkivuttrekk.php'
  * Some things are declared as constants. This is to allow for change in ADDML standard without having to
  * delve into code. Just change in Constants.php
  *
- *
- * TODO: Pick up remaining information in the info section
  */
 class ArkivuttrekkHandler
 {
 
+    /**
+     *
+     * @var ArkivUttrekk $arkivUttrekk : Object populated with the values from arkivuttrekk.xml
+     */
     protected $arkivUttrekk;
 
-    protected $arkivUttrekkFile;
+    /**
+     *
+     * @var string $arkivUttrekkFilename : Path and name of the file arkivuttrekk.xml
+     */
+    protected $arkivUttrekkFilename;
 
-    function __construct($arkivUttrekkFile, $arkivUttrekk)
+    function __construct($arkivUttrekkFilename)
     {
-        $this->arkivUttrekkFile = $arkivUttrekkFile;
-        $this->arkivUttrekk = $arkivUttrekk;
+        $this->arkivUttrekkFilename = $arkivUttrekkFilename;
+        $this->arkivUttrekk = new ArkivUttrekk();
     }
 
     public function processArkivuttrekk()
     {
-        $arkivUttrekk = simplexml_load_file($this->arkivUttrekkFile);
+        $arkivUttrekk = simplexml_load_file($this->arkivUttrekkFilename);
 
         // get details from info section
         $this->getInfoDetails($arkivUttrekk->dataset->dataObjects->dataObject);
@@ -68,7 +74,7 @@ class ArkivuttrekkHandler
  // protected function processArkivutrekk () {
     protected function getFileDetails($dataObject, $noark5File)
     {
-        $arkivUttrekkObject = new ArkivUttrekkFile($noark5File);
+        $arkivUttrekkObject = new ArkivUttrekkNoark5File($noark5File);
         $startSection = $dataObject->properties->property;
         // This portion of the XML file contains
         // <properties>
@@ -100,7 +106,7 @@ class ArkivuttrekkHandler
                                 $arkivUttrekkObject->setFilename($fileDetailsSection->value);
                                 // print 'Found file with following name ' . $fileDetailsSection->value . PHP_EOL;
                             } // if
-elseif (strcasecmp($attrib, Constants::NAME_ARKIVUTTREKK_ATTRIB_NAME) == 0 && strcasecmp($value, Constants::NAME_ARKIVUTTREKK_CHECKSUM) == 0) {
+                            elseif (strcasecmp($attrib, Constants::NAME_ARKIVUTTREKK_ATTRIB_NAME) == 0 && strcasecmp($value, Constants::NAME_ARKIVUTTREKK_CHECKSUM) == 0) {
                                 $fileChecksumSection = $fileDetailsObject->properties->property;
                                 foreach ($fileChecksumSection as $fileChecksumObject) {
                                     foreach ($fileChecksumObject->attributes() as $checksumAttrib => $checksumValue) {
@@ -108,7 +114,7 @@ elseif (strcasecmp($attrib, Constants::NAME_ARKIVUTTREKK_ATTRIB_NAME) == 0 && st
                                             $arkivUttrekkObject->setChecksumAlgorithm($fileChecksumObject->value);
                                             // print 'Found algorithm with following name ' . $fileChecksumObject->value . PHP_EOL;
                                         } // if
-elseif (strcasecmp($checksumAttrib, Constants::NAME_ARKIVUTTREKK_ATTRIB_NAME) == 0 && strcasecmp($checksumValue, Constants::NAME_ARKIVUTTREKK_CHECKSUM) == 0) {
+                                        elseif (strcasecmp($checksumAttrib, Constants::NAME_ARKIVUTTREKK_ATTRIB_NAME) == 0 && strcasecmp($checksumValue, Constants::NAME_ARKIVUTTREKK_CHECKSUM) == 0) {
                                             $arkivUttrekkObject->setChecksumValue($fileChecksumObject->value);
                                             // print 'Found checksum with following value ' . $fileChecksumObject->value . PHP_EOL;
                                         } // elseif (strcasecmp($checksumAttrib, Constants::NAME_ARKIVUTTREKK_ATTRIB_NAME) == 0 && strcasecmp($checksumValue, 'value') == 0) {
@@ -141,7 +147,7 @@ elseif (strcasecmp($checksumAttrib, Constants::NAME_ARKIVUTTREKK_ATTRIB_NAME) ==
                                         } // foreach ($countObject->attributes() as $countAttrib => $countVal) {
                                     } // foreach ($countSection as $countObject) {
                                 } // if (strcasecmp($infoObject->value, 'mappe') == 0) {
-elseif (strcasecmp($infoObject->value, Constants::NAME_ARKIVUTTREKK_REGISTRERING) == 0) {
+                                elseif (strcasecmp($infoObject->value, Constants::NAME_ARKIVUTTREKK_REGISTRERING) == 0) {
                                     foreach ($infoObject->properties->property as $countObject) {
                                         foreach ($countObject->attributes() as $countAttrib => $countVal) {
                                             if (strcasecmp($countAttrib, Constants::NAME_ARKIVUTTREKK_DATATYPE) == 0 && strcasecmp($countVal, Constants::NAME_ARKIVUTTREKK_INTEGER) == 0) {
@@ -248,11 +254,10 @@ elseif (strcasecmp($infoObject->value, Constants::NAME_ARKIVUTTREKK_REGISTRERING
         $this->arkivUttrekk->setExtractionInfo($extractionInfo);
     }
 
-    public function getArkivUttrekk()
+    public function getArkivUttrekkDetails()
     {
-        return $this->arkivUttrekk;
+        return $this->arkivUttrekkDetails;
     }
-    // protected function getFileDetails($dataObject, $noark5File) {
 }
 
 ?>

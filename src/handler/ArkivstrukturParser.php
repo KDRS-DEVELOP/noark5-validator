@@ -1,4 +1,20 @@
 <?php
+require_once ('models/noark5/v31/Fonds.php');
+require_once ('models/noark5/v31/FondsCreator.php');
+require_once ('models/noark5/v31/Series.php');
+require_once ('models/noark5/v31/File.php');
+require_once ('models/noark5/v31/CaseFile.php');
+require_once ('models/noark5/v31/Record.php');
+require_once ('models/noark5/v31/BasicRecord.php');
+require_once ('models/noark5/v31/RegistryEntry.php');
+require_once ('models/noark5/v31/MeetingRecord.php');
+require_once ('models/noark5/v31/MeetingFile.php');
+require_once ('models/noark5/v31/CorrespondencePart.php');
+require_once ('models/noark5/v31/DocumentDescription.php');
+require_once ('models/noark5/v31/DocumentObject.php');
+require_once ('models/noark5/v31/SignOff.php');
+require_once ('tests/file/ChecksumTest.php');
+require_once ('vendor/apache/log4php/src/main/php/Logger.php');
 
 /*
  * This is a pretty straight forward implementation of callback methods
@@ -28,7 +44,6 @@
  *       here. Other values in the metadatacatlog are not included. e.g M580, brukerNavn
  *       The same applies to fields belonging to endringslogg.xml etc
  *
- * NTE: Check that all new ArrayCollection() aer actually initiaslsed;
  */
 class ArkivstrukturParser
 {
@@ -47,171 +62,9 @@ class ArkivstrukturParser
 
     /**
      *
-     * @var int $numberOfFondsProcessed: The number of Fonds <arkiv> elements that are processed
+     * @var ArkivstrukturStatistics $statistics: Holds counts of the various complexTypes encountered
      */
-    protected $numberOfFondsProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfFondsCreatorProcessed: The number of FondsCreator <arkivskaper> elements that are processed
-     */
-    protected $numberOfFondsCreatorProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfSeriesProcessed: The number of Series, <arkivdel> elements that are processed
-     */
-    protected $numberOfSeriesProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfClassificationSystemProcessed: The number of ClassificationSystem, <klassifikasjonssystem,> elements that are processed
-     */
-    protected $numberOfClassificationSystemProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfClassProcessed: The number of Class, <klasse> elements that are processed
-     */
-    protected $numberOfClassProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfFileProcessed: The number of File, <mappe> elements that are processed
-     */
-    protected $numberOfFileProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfCaseFileProcessed: The number of CaseFile, <saksmappe> elements that are processed
-     */
-    protected $numberOfCaseFileProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfMeetingFileProcessed: The number of MeetingFile, <moetemappe> elements that are processed
-     */
-    protected $numberOfMeetingFileProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfRecordProcessed: The number of Record, <registrering> elements that are processed
-     */
-    protected $numberOfRecordProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfBasicRecordProcessed: The number of BasicRecord, <basisregistrering> elements that are processed
-     */
-    protected $numberOfBasicRecordProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfRegistryEntryProcessed: The number of RegistryEntry, <journalpost> elements that are processed
-     */
-    protected $numberOfRegistryEntryProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfMeetingRecordProcessed: The number of MeetingRecord, <moeteregistrering> elements that are processed
-     */
-    protected $numberOfMeetingRecordProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfDocumentDescriptionProcessed: The number of DocumentDescription, <dokumentbeskrivelse> elements that are processed
-     */
-    protected $numberOfDocumentDescriptionProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfDocumentObjectProcessed: The number of DocumentObject, <documentobjekt> elements that are processed
-     */
-    protected $numberOfDocumentObjectProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfSignOffProcessed: The number of SignOff, <avskrivning> elements that are processed
-     */
-    protected $numberOfSignOffProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfCorrespondancePartProcessed: The number of CorrespondancePart, <korrespondansepart> elements that are processed
-     */
-    protected $numberOfCorrespondancePartProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfClassificationProcessed: The number of Classification, <gradering> elements that are processed
-     */
-    protected $numberOfClassificationProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfDeletionProcessed: The number of Deletion, <sletting> elements that are processed
-     */
-    protected $numberOfDeletionProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfDisposalProcessed: The number of Disposal, <kassasjon> elements that are processed
-     */
-    protected $numberOfDisposalProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfDisposalUndertakenProcessed: The number of DisposalUndertaken, <utfoertKassasjon> elements that are processed
-     */
-    protected $numberOfDisposalUndertakenProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfPrecedenceProcessed: The number of Precedence, <presedens> elements that are processed
-     */
-    protected $numberOfPrecedenceProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfCrossReferenceProcessed: The number of CrossReference, <kryssreferanse> elements that are processed
-     */
-    protected $numberOfCrossReferenceProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfElectronicSignatureProcessed: The number of ElectronicSignature, <elektroniskSignatur> elements that are processed
-     */
-    protected $numberOfElectronicSignatureProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfScreeningProcessed: The number of Screening, <skjerming> elements that are processed
-     */
-    protected $numberOfScreeningProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfCommentProcessed: The number of Comment, <merknad> elements that are processed
-     */
-    protected $numberOfCommentProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfConversionProcessed: The number of Conversion, <konvertering> elements that are processed
-     */
-    protected $numberOfConversionProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfCasePartyProcessed: The number of CaseParty, <sakspart> elements that are processed
-     */
-    protected $numberOfCasePartyProcessed = 0;
-
-    /**
-     *
-     * @var int $numberOfWorkflowProcessed: The number of Workflow, <dokumentflyt> elements that are processed
-     */
-     protected $numberOfWorkflowProcessed = 0;
+    protected $statistics;
 
     /**
      *
@@ -232,8 +85,8 @@ class ArkivstrukturParser
         $this->stack = array();
         $this->currentCdata = "";
         $this->onlyParse = $onlyParse;
-        Logger::configure('../resources/logging/log4php.xml');
-        $this->logger = Logger::getLogger(basename(__FILE__));
+        $this->statistics = new ArkivstrukturStatistics();
+        $this->logger = Logger::getLogger($GLOBALS['toolboxLogger']);
         $this->logger->trace('Constructing an instance of ' . get_class($this));
     }
 
@@ -293,8 +146,7 @@ class ArkivstrukturParser
                             $classType = 'MeetingFile';
                             $this->preProcessMeetingFile();
                         } else {
-
-$this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handle mappe xsi:type = ' . $attributes['xsi:type']);
+                            $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handle mappe xsi:type = ' . $attributes['xsi:type']);
                             throw new Exception(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handle mappe xsi:type = ' . $attributes['xsi:type']);
                         }
                     }
@@ -318,8 +170,7 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
                             $classType = 'MeetingRecord';
                             $this->preProcessMeetingRecord();
                         } else {
-
-$this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handle registrering xsi:type = ' . $attributes['xsi:type']);
+                            $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handle registrering xsi:type = ' . $attributes['xsi:type']);
                             throw new Exception(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handle registrering xsi:type = ' . $attributes['xsi:type']);
                         }
                     }
@@ -459,7 +310,6 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
                 array_pop($this->stack);
                 break;
             case 'mappe':
-
                 $classType = get_class(end($this->stack));
 
                 if (strcasecmp($classType, 'CaseFile') == 0) {
@@ -512,15 +362,11 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
                 $this->numberOfSignOffProcessed++;
                 array_pop($this->stack);
                 break;
-            case 'dokumentflyt':
-                break;
             case 'presedens':
                 $this->checkObjectClassTypeCorrect('Precedence');
                 $this->postProcessPrecedence();
                 $this->numberOfPrecedenceProcessed++;
                 array_pop($this->stack);
-                break;
-            case 'elektroniskSignatur':
                 break;
             case 'dokumentbeskrivelse':
                 $this->checkObjectClassTypeCorrect('DocumentDescription');
@@ -692,9 +538,6 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
                 break;
             case 'bevaringstid':
                 $this->handlePreservationTime();
-                break;
-            case 'brukerNavn':
-                $this->handleUsername();
                 break;
             case 'dokumentetsDato':
                 $this->handleDocumentDate();
@@ -987,9 +830,6 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
             case 'sakssekvensnummer':
                 $this->handleCaseSequenceNumber();
                 break;
-            case 'seleksjon':
-                $this->handleSelection();
-                break;
             case 'saksstatus':
                 $this->handleCaseStatus();
                 break;
@@ -1102,8 +942,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleAccessRestriction()
-     * Can be used by : skjerming, gradering
-     * n5mdk : M500 tilgangsrestriksjon
+     * Can be used by: skjerming, gradering
+     * n5mdk: M500 tilgangsrestriksjon
      */
     protected function handleAccessRestriction()
     {
@@ -1113,8 +953,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleAdministrativeUnit()
-     * Can be used by : saksmappe, journalpost, moeteregistrering
-     * n5mdk : M305 administrativEnhet
+     * Can be used by: saksmappe, journalpost, moeteregistrering
+     * n5mdk: M305 administrativEnhet
      */
     protected function handleAdministrativeUnit()
     {
@@ -1124,8 +964,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleArchivedBy()
-     * Can be used by : Record
-     * n5mdk : M605 arkivertAv
+     * Can be used by: Record
+     * n5mdk: M605 arkivertAv
      */
     protected function handleArchivedBy()
     {
@@ -1135,8 +975,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleArchivedDate()
-     * Can be used by : registrering
-     * n5mdk : M604 arkivertDato
+     * Can be used by: registrering
+     * n5mdk: M604 arkivertDato
      */
     protected function handleArchivedDate()
     {
@@ -1146,7 +986,7 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleAssociatedBy()
-     * Can be used by : dokumentbeskrivelse
+     * Can be used by: dokumentbeskrivelse
      * n5mdk: M621 tilknyttetAv
      */
     protected function handleAssociatedBy()
@@ -1157,8 +997,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleAssociatedWithRecordAs()
-     * Can be used by : dokumentbeskrivelse
-     * n5mdk : M217 tilknyttetRegistreringSom
+     * Can be used by: dokumentbeskrivelse
+     * n5mdk: M217 tilknyttetRegistreringSom
      */
     protected function handleAssociatedWithRecordAs()
     {
@@ -1168,7 +1008,7 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleAssociationDate()
-     * Can be used by : dokumentbeskrivelse
+     * Can be used by: dokumentbeskrivelse
      * n5mdk: M620 tilknyttetDato
      */
     protected function handleAssociationDate()
@@ -1179,8 +1019,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleAuthor()
-     * Can be used by : dokumentbeskrivelse, basisregistrering
-     * n5mdk : M024 forfatter
+     * Can be used by: dokumentbeskrivelse, basisregistrering
+     * n5mdk: M024 forfatter
      */
     protected function handleAuthor()
     {
@@ -1190,8 +1030,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleCaseDate()
-     * Can be used by : saksmappe
-     * n5mdk : M100 saksdato
+     * Can be used by: saksmappe
+     * n5mdk: M100 saksdato
      */
     protected function handleCaseDate()
     {
@@ -1201,8 +1041,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleCaseHandler()
-     * Can be used by : journalpost, moeteregistrering
-     * n5mdk : M307 saksbehandler
+     * Can be used by: journalpost, moeteregistrering
+     * n5mdk: M307 saksbehandler
      */
     protected function handleCaseHandler()
     {
@@ -1212,8 +1052,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleCasePartyId()
-     * Can be used by : sakspart
-     * n5mdk : M010 sakspartID
+     * Can be used by: sakspart
+     * n5mdk: M010 sakspartID
      */
     protected function handleCasePartyId()
     {
@@ -1223,8 +1063,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleCasePartyName()
-     * Can be used by : sakspart
-     * n5mdk : M302 sakspartNavn
+     * Can be used by: sakspart
+     * n5mdk: M302 sakspartNavn
      */
     protected function handleCasePartyName()
     {
@@ -1234,8 +1074,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleCasePartyRole()
-     * Can be used by : sakspart
-     * n5mdk : M303 sakspartRolle
+     * Can be used by: sakspart
+     * n5mdk: M303 sakspartRolle
      */
     protected function handleCasePartyRole()
     {
@@ -1245,8 +1085,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleCaseResponsible()
-     * Can be used by : saksmappe
-     * n5mdk : M306 saksansvarlig
+     * Can be used by: saksmappe
+     * n5mdk: M306 saksansvarlig
      */
     protected function handleCaseResponsible()
     {
@@ -1256,8 +1096,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleCaseSequenceNumber()
-     * Can be used by : saksmappe
-     * n5mdk : M012 sakssekvensnummer
+     * Can be used by: saksmappe
+     * n5mdk: M012 sakssekvensnummer
      */
     protected function handleCaseSequenceNumber()
     {
@@ -1267,8 +1107,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleCaseStatus()
-     * Can be used by : saksmappe
-     * n5mdk : M052 saksstatus
+     * Can be used by: saksmappe
+     * n5mdk: M052 saksstatus
      */
     protected function handleCaseStatus()
     {
@@ -1278,8 +1118,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleCaseYear()
-     * Can be used by : saksmappe
-     * n5mdk : M011 saksaar
+     * Can be used by: saksmappe
+     * n5mdk: M011 saksaar
      */
     protected function handleCaseYear()
     {
@@ -1289,7 +1129,7 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleChecksum()
-     * Can be used by : dokumentobjekt
+     * Can be used by: dokumentobjekt
      * n5mdk: M705 sjekksum
      */
     protected function handleChecksum()
@@ -1300,7 +1140,7 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleChecksumAlgorithm()
-     * Can be used by : dokumentobjekt
+     * Can be used by: dokumentobjekt
      *  n5mdk: M706 sjekksumAlgoritme
      */
     protected function handleChecksumAlgorithm()
@@ -1311,7 +1151,7 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleClassId()
-     * Can be used by : klasse
+     * Can be used by: klasse
      * n5mdk: M002 klasseID
      */
     protected function handleClassId()
@@ -1322,7 +1162,7 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleClassification()
-     * Can be used by : gradering
+     * Can be used by: gradering
      * n5mdk: M506 gradering
      */
     protected function handleClassification()
@@ -1333,7 +1173,7 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleClassificationBy()
-     * Can be used by : gradering
+     * Can be used by: gradering
      * n5mdk: M625 gradertAv
      */
     protected function handleClassificationBy()
@@ -1344,7 +1184,7 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleClassificationDate()
-     * Can be used by : gradering
+     * Can be used by: gradering
      * n5mdk: M624 graderingsdato
      */
     protected function handleClassificationDate()
@@ -1355,7 +1195,7 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleClassificationDowngradedDate()
-     * Can be used by : gradering
+     * Can be used by: gradering
      * n5mdk: M626 nedgraderingsdato
      */
     protected function handleClassificationDowngradedDate()
@@ -1366,7 +1206,7 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleClassificationDowngradedBy()
-     * Can be used by : gradering
+     * Can be used by: gradering
      * n5mdk: M627 nedgradertAv
      */
     protected function handleClassificationDowngradedBy()
@@ -1377,8 +1217,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleClassificationType()
-     * Can be used by : klassifikasjonssystem
-     * n5mdk : M086 klassifikasjonstype
+     * Can be used by: klassifikasjonssystem
+     * n5mdk: M086 klassifikasjonstype
      */
     protected function handleClassificationType()
     {
@@ -1388,31 +1228,31 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleCommentDate()
-     * Can be used by : merknad
-     * n5mdk : M611 merknadsdato
+     * Can be used by: merknad
+     * n5mdk: M611 merknadsdato
      */
     protected function handleCommentDate()
     {
         $object = end($this->stack);
-        $object->setCommentText($this->currentCdata);
+        $object->setCommentDate($this->currentCdata);
     }
 
     /**
      * function handleCommentRegisteredBy()
-     * Can be used by : merknad
-     * n5mdk : M612 merknadRegistrertAv
+     * Can be used by: merknad
+     * n5mdk: M612 merknadRegistrertAv
      */
 
     protected function handleCommentRegisteredBy()
     {
         $object = end($this->stack);
-        $object->setCommentText($this->currentCdata);
+        $object->setCommentRegisteredBy($this->currentCdata);
     }
 
     /**
      * function handleCommentText()
-     * Can be used by : merknad
-     * n5mdk : M310 merknadstekst
+     * Can be used by: merknad
+     * n5mdk: M310 merknadstekst
      */
     protected function handleCommentText()
     {
@@ -1422,8 +1262,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleCommentType()
-     * Can be used by : merknad
-     * n5mdk : M084 merknadstype
+     * Can be used by: merknad
+     * n5mdk: M084 merknadstype
      */
     protected function handleCommentType()
     {
@@ -1433,8 +1273,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleCommittee()
-     * Can be used by : moetemappe
-     * n5mdk : M370 utvalg
+     * Can be used by: moetemappe
+     * n5mdk: M370 utvalg
      */
     protected function handleCommittee() {
         $object = end($this->stack);
@@ -1443,8 +1283,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleContactPerson()
-     * Can be used by : journalpost, sakspart
-     * n5mdk : M412 kontaktperson
+     * Can be used by: journalpost, sakspart
+     * n5mdk: M412 kontaktperson
      */
     protected function handleContactPerson()
     {
@@ -1454,8 +1294,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleConvertedBy()
-     * Can be used by : konvertering
-     * n5mdk : M616 konvertertAv
+     * Can be used by: konvertering
+     * n5mdk: M616 konvertertAv
      */
     protected function handleConvertedBy()
     {
@@ -1465,8 +1305,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleConversionComment()
-     * Can be used by : konvertering
-     * n5mdk : M715 konverteringskommentar
+     * Can be used by: konvertering
+     * n5mdk: M715 konverteringskommentar
      */
     protected function handleConversionComment()
     {
@@ -1476,8 +1316,8 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleConvertedDate()
-     * Can be used by : konvertering
-     * n5mdk : M615 konvertertDato
+     * Can be used by: konvertering
+     * n5mdk: M615 konvertertDato
      */
     protected function handleConvertedDate()
     {
@@ -1488,6 +1328,1534 @@ $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handl
 
     /**
      * function handleConvertedFromFormat()
-     * Can be used by : konvertering
-	 
+     * Can be used by: konvertering
+     * n5mdk: M712 konvertertFraFormat
+     */
+    protected function handleConvertedFromFormat()
+    {
+        $object = end($this->stack);
+        $object->setConvertedFromFormat($this->currentCdata);
+    }
+
+    /**
+     * function handleConvertedToFormat()
+     * Can be used by: konvertering
+     * n5mdk: M713 konvertertTilFormat
+     */
+    protected function handleConvertedToFormat()
+    {
+        $object = end($this->stack);
+        $object->setConvertedToFormat($this->currentCdata);
+    }
+
+    /**
+     * function handleConversionTool()
+     * Can be used by: konvertering
+     * n5mdk: M714 konverteringsverktoey
+     */
+    protected function handleConversionTool()
+    {
+        $object = end($this->stack);
+        $object->setConversionTool($this->currentCdata);
+    }
+
+    /**
+     * function handleCountry()
+     * Can be used by: journalpost, sakspart
+     * n5mdk: M409 land
+     */
+    protected function handleCountry()
+    {
+        $object = end($this->stack);
+        $object->setCountry($this->currentCdata);
+    }
+
+    /**
+     * function handleCorrespondencePartType()
+     * Can be used by: korrespondansepart
+     * n5mdk: M087 korrespondanseparttype
+     */
+    protected function handleCorrespondencePartType()
+    {
+        $object = end($this->stack);
+        $object->setCorrespondancePartType($this->currentCdata);
+    }
+
+    /**
+     * function handleCorrespondencePartName()
+     * Can be used by: journalpost
+     * n5mdk: M400 korrespondansepartNavn
+     */
+    protected function handleCorrespondencePartName()
+    {
+        $object = end($this->stack);
+        $object->setCorrespondancePartName($this->currentCdata);
+    }
+
+    /**
+     * function handleCreatedBy()
+     * Can be used by: arkiv, arkivdel, klassifikasjonssystem, klasse, mappe, registrering,
+     *                  dokumentbeskrivelse, dokumentobjekt, presedens
+     * n5mdk: M600 opprettetAv
+     */
+    protected function handleCreatedBy()
+    {
+        $object = end($this->stack);
+        $object->setCreatedBy($this->currentCdata);
+    }
+
+    /**
+     * function handleCreatedDate()
+     * Can be used by: arkiv, arkivdel, klassifikasjonssystem, klasse, mappe, registrering,
+     *                  dokumentbeskrivelse, dokumentobjekt, presedens
+     * n5mdk: M600 opprettetDato
+     */
+    protected function handleCreatedDate()
+    {
+        $object = end($this->stack);
+        $object->setCreatedDate($this->currentCdata);
+    }
+
+    /**
+     * function handleDeletionBy()
+     * Can be used by: sletting
+     * n5mdk: M614 slettetAv
+     */
+    protected function handleDeletionBy()
+    {
+        $object = end($this->stack);
+        $object->setDeletionBy($this->currentCdata);
+    }
+
+     /**
+     * function handleDeletionType()
+     * Can be used by: sletting
+     * n5mdk: M613 slettetDato
+     */
+    protected function handleDeletionDate()
+    {
+        $object = end($this->stack);
+        $object->setDeletionDate($this->currentCdata);
+    }
+
+    /**
+     * function handleDeletionType()
+     * Can be used by: sletting
+     * n5mdk: M089 slettingstype
+     */
+    protected function handleDeletionType()
+    {
+        $object = end($this->stack);
+        $object->setDeletionType($this->currentCdata);
+    }
+
+    /**
+     * function handleDisposalAuthority()
+     * Can be used by: kassasjon
+     * n5mdk: M453 kassasjonshjemmel
+     */
+    protected function handleDisposalAuthority()
+    {
+        $object = end($this->stack);
+        $object->setDisposalAuthority($this->currentCdata);
+    }
+
+    /**
+     * function handleDisposalDate()
+     * Can be used by: kassasjon
+     * n5mdk: M452 kassasjonsdato
+     */
+    protected function handleDisposalDate()
+    {
+        $object = end($this->stack);
+        $object->setDisposalDecision($this->currentCdata);
+    }
+
+    /**
+     * function handleDisposalDecision()
+     * Can be used by: kassasjon
+     * n5mdk: M450 kassasjonsvedtak
+     */
+    protected function handleDisposalDecision()
+    {
+        $object = end($this->stack);
+        $object->setDisposalDecision($this->currentCdata);
+    }
+
+    /**
+     * function handleDisposalUndertakenBy()
+     * Can be used by: utfoertkassasjon
+     * n5mdk: M631 kassertAv
+     */
+    protected function handleDisposalUndertakenBy()
+    {
+        $object = end($this->stack);
+        $object->setDisposalUndertakenBy($this->currentCdata);
+    }
+
+    /**
+     * function handleDisposalUndertakenDate()
+     * Can be used by: utfoertkassasjon
+     * n5mdk: M630 kassertDato
+     */
+    protected function handleDisposalUndertakenDate()
+    {
+        $object = end($this->stack);
+        $object->setDisposalDate($this->currentCdata);
+    }
+
+    /**
+     * function handleDocumentDate()
+     * Can be used by: journalpost
+     * n5mdk: M103 dokumentetsDato
+     */
+    protected function handleDocumentDate()
+    {
+        $object = end($this->stack);
+        $object->setDocumentDate($this->currentCdata);
+    }
+
+    /**
+     * function handleDocumentNumber()
+     * Can be used by: dokumentbeskrivelse
+     * n5mdk: M007 dokumentnummer
+     */
+    protected function handleDocumentNumber()
+    {
+        $object = end($this->stack);
+        $object->setDocumentNumber($this->currentCdata);
+    }
+
+    /**
+     * function handleDocumentStatus()
+     * Can be used by: dokumentbeskrivelse
+     * n5mdk: M054 dokumentstatus
+     */
+    protected function handleDocumentStatus()
+    {
+        $object = end($this->stack);
+        $object->setDocumentStatus($this->currentCdata);
+    }
+
+    /**
+     * function handleDocumentType()
+     * Can be used by: dokumentbeskrivelse
+     * n5mdk: M083 dokumenttype
+     */
+    protected function handleDocumentType()
+    {
+        $object = end($this->stack);
+        $object->setDocumentType($this->currentCdata);
+    }
+
+    /**
+     * function handleDueDate()
+     * Can be used by: journalpost
+     * n5mdk: M109 forfallsdato
+     */
+    protected function handleDueDate()
+    {
+        $object = end($this->stack);
+        $object->setDueDate($this->currentCdata);
+    }
+
+    /**
+     * function handleEmailAddress()
+     * Can be used by: journalpost, sakspart
+     * n5mdk: M410 epostadresse
+     */
+    protected function handleEmailAddress()
+    {
+        $object = end($this->stack);
+        $object->setEmailAddress($this->currentCdata);
+    }
+
+    /**
+     * function: handleDescription()
+     * Can be used by: arkiv, arkivdel, klassifikasjonssystem, klasse, mappe, basisregistrering,
+     * dokumentbeskrivelse, arkivskaper, presedens
+     * n5mdk: M021 beskrivelse
+     */
+    protected function handleDescription()
+    {
+        $object = end($this->stack);
+        $object->setDescription($this->currentCdata);
+    }
+
+    /**
+     * function handleDocumentMedium()
+     * Can be used by: arkiv, arkivdel, mappe, basisregistrering, dokumentbeskrivelse
+     * n5mdk: M300 dokumentmedium
+     */
+    protected function handleDocumentMedium()
+    {
+        $object = end($this->stack);
+        $object->setDocumentMedium($this->currentCdata);
+    }
+
+    /**
+     * function handleElectronicSignatureSecurityLevel()
+     * Can be used by: elektronisksignatur
+     * n5mdk:  M507 elektroniskSignaturSikkerhetsnivaa
+     */
+    protected function handleElectronicSignatureSecurityLevel()
+    {
+        $object = end($this->stack);
+        $object->setElectronicSignatureSecurityLevel($this->currentCdata);
+    }
+    /**
+     * function handleElectronicSignatureVerified()
+     * Can be used by: elektronisksignatur
+     * n5mdk: M508 - elektroniskSignaturVerifisert
+     */
+    protected function handleElectronicSignatureVerified()
+    {
+        $object = end($this->stack);
+        $object->setElectronicSignatureVerified($this->currentCdata);
+    }
+
+    /**
+     * function handleFileId()
+     * Can be used by: File
+     * n5mdk: M003 mappeID
+     */
+    protected function handleFileId()
+    {
+        $object = end($this->stack);
+        $object->setFileId($this->currentCdata);
+    }
+
+    /**
+     * function handleFileSize()
+     * Can be used by: dokumentobjekt
+     * n5mdk: M707 filstoerrelse
+     */
+    protected function handleFileSize()
+    {
+        $object = end($this->stack);
+        $object->setFileSize($this->currentCdata);
+    }
+
+    /**
+     * function handleFinalisedDate()
+     * Can be used by: arkiv, arkivdel, klassifikasjonssystem, klasse og mappe
+     * n5mdk: M602 avsluttetDato
+     */
+    protected function handleFinalisedDate()
+    {
+        $object = end($this->stack);
+        $object->setFinalisedDate($this->currentCdata);
+    }
+
+    /**
+     * function handleFinalisedBy()
+     * Can be used by: arkiv, arkivdel, klassifikasjonssystem, klasse og mappe
+     * n5mdk: M603 avsluttetAv
+     */
+    protected function handleFinalisedBy()
+    {
+        $object = end($this->stack);
+        $object->setFinalisedBy($this->currentCdata);
+    }
+
+    /**
+     * function handleFondsCreatorID()
+     * Can be used by: FondsCreator
+     * n5mdk: M006 arkivskaperID
+     */
+    protected function handleFondsCreatorID()
+    {
+        $object = end($this->stack);
+        $object->setFondsCreatorID($this->currentCdata);
+    }
+
+    /**
+     * function handleFondsCreatorName()
+     * Can be used by: arkivskaper
+     * n5mdk: M023 arkivskaperNavn
+     */
+    protected function handleFondsCreatorName()
+    {
+        $object = end($this->stack);
+        $object->setFondsCreatorName($this->currentCdata);
+    }
+
+    /**
+     * function: handleFondsStatus()
+     * Can be used by: arkiv
+     * n5mdk: M050 arkivstatus
+     */
+    protected function handleFondsStatus()
+    {
+        $object = end($this->stack);
+        $object->setFondsStatus($this->currentCdata);
+    }
+
+    /**
+     * function handleFormat()
+     * Can be used by: dokumentobjekt
+     * n5mdk: M701 format
+     */
+    protected function handleFormat()
+    {
+        $object = end($this->stack);
+        $object->setFormat($this->currentCdata);
+    }
+
+    /**
+     * function: handleFormatDetails
+     * Can be used by: dokumentobjekt
+     * n5mdk: M702 formatDetaljer
+     */
+    protected function handleFormatDetails()
+    {
+        $object = end($this->stack);
+        $object->setFormatDetails($this->currentCdata);
+    }
+
+    /**
+     * function handleKeyword()
+     * Can be used by: klasse, mappe, basisregistrering
+     * n5mdk: M022 noekkelord
+     */
+    protected function handleKeyword()
+    {
+        $object = end($this->stack);
+        $object->addKeyword($this->currentCdata);
+    }
+
+    /**
+     * function handleLoanedDate()
+     * Can be used by: saksmappe, journalpost
+     * n5mdk: M106 utlaantDato
+     */
+    protected function handleLoanedDate()
+    {
+        $object = end($this->stack);
+        $object->setLoanedDate($this->currentCdata);
+    }
+
+    /**
+     * function handleLoanedTo()
+     * Can be used by: saksmappe, journalpost
+     * n5mdk: M309 utlaantTil
+     */
+    protected function handleLoanedTo()
+    {
+        $object = end($this->stack);
+        $object->setLoanedTo($this->currentCdata);
+    }
+
+    /**
+     * function handleMeetingCaseType()
+     * Can be used by: moeteregistrering
+     * n5mdk: M088 moetesakstype
+     */
+    protected function handleMeetingCaseType()
+    {
+        $object = end($this->stack);
+        $object->setMeetingCaseType($this->currentCdata);
+    }
+
+    /**
+     * function handleMeetingDate()
+     * Can be used by: moetemappe
+     * n5mdk: M102 moetedato
+     */
+    protected function handleMeetingDate()
+    {
+        $object = end($this->stack);
+        $object->setMeetingDate($this->currentCdata);
+    }
+
+    /**
+     * function handleMeetingParticipantFunction()
+     * Can be used by: moetemappe
+     * n5mdk: M373 moetedeltakerFunksjon
+     */
+    protected function handleMeetingParticipantFunction()
+    {
+        $object = end($this->stack);
+        $object->setMeetingParticipantFunction($this->currentCdata);
+    }
+
+    /**
+     * function handleMeetingParticipantName()
+     * Can be used by: moetemappe
+     * n5mdk: M372 moetedeltakerNavn
+     */
+    protected function handleMeetingParticipantName()
+    {
+        $object = end($this->stack);
+        $object->setMeetingParticipantName($this->currentCdata);
+    }
+
+    /**
+     * function handleMeetingPlace()
+     * Can be used by: moetemappe
+     * n5mdk: M371 moetested
+     */
+    protected function handleMeetingPlace()
+    {
+        $object = end($this->stack);
+        $object->setMeetingPlace($this->currentCdata);
+    }
+
+    /**
+     * function handleMeetingNumber()
+     * Can be used by: moetemappe
+     * n5mdk: M008 moetenummer
+     */
+    protected function handleMeetingNumber()
+    {
+        $object = end($this->stack);
+        $object->setMeetingNumber($this->currentCdata);
+    }
+
+    /**
+     * function handleMeetingRecordStatus()
+     * Can be used by: moeteregistrering
+     * n5mdk: M055 moeteregistreringsstatus
+     */
+    protected function handleMeetingRecordStatus()
+    {
+        $object = end($this->stack);
+        $object->setMeetingRecordStatus($this->currentCdata);
+    }
+
+    /**
+     * function handleMeetingRecordType()
+     * Can be used by: moeteregistrering
+     * n5mdk: M085 moeteregistreringstype
+     */
+    protected function handleMeetingRecordType()
+    {
+        $object = end($this->stack);
+        $object->setMeetingRecordType($this->currentCdata);
+    }
+
+    /**
+     * function handleNumberOfAttachments()
+     * Can be used by: journalpost
+     * n5mdk: M304 antallVedlegg
+     */
+    protected function handleNumberOfAttachments()
+    {
+        $object = end($this->stack);
+        $object->setNumberOfAttachments($this->currentCdata);
+    }
+
+    /**
+     * function handleOfficialTitle()
+     * Can be used by: mappe, basisregistrering
+     * n5mdk: M025 offentligTittel
+     */
+    protected function handleOfficialTitle()
+    {
+        $object = end($this->stack);
+        $object->setOfficialTitle($this->currentCdata);
+    }
+
+    /**
+     * function handlePostalAddress()
+     * Can be used by: journalpost, sakspart
+     * n5mdk: M406 postadresse
+     */
+    protected function handlePostalAddress()
+    {
+        $object = end($this->stack);
+        $object->setPostalAddress($this->currentCdata);
+    }
+
+    /**
+     * function handlePostalNumber()
+     * Can be used by: journalpost, sakspart
+     * n5mdk: M407 postnummer
+     */
+    protected function handlePostalNumber()
+    {
+        $object = end($this->stack);
+        $object->setPostCode($this->currentCdata);
+    }
+
+    /**
+     * function handlePostalTown()
+     * Can be used by: journalpost, sakspart
+     * n5mdk: M408 poststed
+     */
+    protected function handlePostalTown()
+    {
+        $object = end($this->stack);
+        $object->setPostalTown($this->currentCdata);
+    }
+
+    /**
+     * function handlePrecedenceApprovedBy()
+     * Can be used by: presedens
+     * n5mdk: M629 presedensGodkjentAv
+     */
+    protected function handlePrecedenceApprovedBy()
+    {
+        $object = end($this->stack);
+        $object->setPrecedenceApprovedBy($this->currentCdata);
+    }
+
+    /**
+     * function handlePrecedenceApprovedDate()
+     * Can be used by: presedens
+     * n5mdk: M628 presedensGodkjentDato
+     */
+    protected function handlePrecedenceApprovedDate()
+    {
+        $object = end($this->stack);
+        $object->setPrecedenceApprovedDate($this->currentCdata);
+    }
+
+    /**
+     * function handlePrecedenceAuthority()
+     * Can be used by: presedens
+     * n5mdk: M311 presedensHjemmel
+     */
+    protected function handlePrecedenceAuthority()
+    {
+        $object = end($this->stack);
+        $object->setPrecedenceAuthority($this->currentCdata);
+    }
+
+    /**
+     * function handlePrecedenceDate()
+     * Can be used by: presedens
+     * n5mdk: M111 presedensdato
+     */
+    protected function handlePrecedenceDate()
+    {
+        $object = end($this->stack);
+        $object->setPrecedenceDate($this->currentCdata);
+    }
+
+    /**
+     * function handlePrecedenceStatus()
+     * Can be used by: presedens
+     * n5mdk: M056 presedensstatus
+     */
+    protected function handlePrecedenceStatus()
+    {
+        $object = end($this->stack);
+        $object->setPrecedenceStatus($this->currentCdata);
+    }
+
+    /**
+     * function handlePreservationTime()
+     * Can be used by: kassasjon
+     * n5mdk: M451 bevaringstid
+     */
+    protected function handlePreservationTime()
+    {
+        $object = end($this->stack);
+        $object->setPreservationTime($this->currentCdata);
+    }
+
+    /**
+     * function handleReceivedDate()
+     * Can be used by: journalpost
+     * n5mdk: M104 mottattDato
+     */
+    protected function handleReceivedDate()
+    {
+        $object = end($this->stack);
+        $object->setReceivedDate($this->currentCdata);
+    }
+
+    /**
+     * function handleRecordEndDate()
+     * Can be used by: journalpost
+     * n5mdk: M113 journalSluttDato
+     */
+    protected function handleRecordEndDate()
+    {
+        $object = end($this->stack);
+        $object->setRecordEndDate($this->currentCdata);
+    }
+
+    /**
+     * function handleRecordDate()
+     * Can be used by: journalpost
+     * n5mdk: M101 journaldato
+     */
+    protected function handleRecordDate()
+    {
+        $object = end($this->stack);
+        $object->setRecordDate($this->currentCdata);
+    }
+
+    /**
+     * function handleRecordId()
+     * Can be used by: BasicRecord
+     * n5mdk: M004 registreringsID
+     */
+    protected function handleRecordId()
+    {
+        $object = end($this->stack);
+        $object->setRecordId($this->currentCdata);
+    }
+
+    /**
+     * function handleRecordNumber()
+     * Can be used by: journalpost
+     * n5mdk: M015 journalpostnummer
+     */
+    protected function handleRecordNumber()
+    {
+        $object = end($this->stack);
+        $object->setRecordNumber($this->currentCdata);
+    }
+
+    /**
+     * function handleRecordSequenceNumber()
+     * Can be used by: journalpost
+     * n5mdk: M014 journalsekvensnummer
+     */
+    protected function handleRecordSequenceNumber()
+    {
+        $object = end($this->stack);
+        $object->setRecordSequenceNumber($this->currentCdata);
+    }
+
+    /**
+     * function handleRecordsManagementUnit()
+     * Can be used by: saksmappe, journalpost
+     * n5mdk: M308 journalenhet
+     */
+    protected function handleRecordsManagementUnit()
+    {
+        $object = end($this->stack);
+        $object->setRecordsManagementUnit($this->currentCdata);
+    }
+
+    /**
+     * function handleRecordStatus()
+     * Can be used by: journalpost
+     * n5mdk: M053 journalstatus
+     */
+    protected function handleRecordStatus()
+    {
+        $object = end($this->stack);
+        $object->setRecordStatus($this->currentCdata);
+    }
+
+    /**
+     * function handleRecordStartDate()
+     * Can be used by: journalpost
+     * n5mdk: M112 journalStartDato
+     */
+    protected function handleRecordStartDate()
+    {
+        $object = end($this->stack);
+        $object->setRecordStartDate($this->currentCdata);
+    }
+
+    /**
+     * function handleRecordType()
+     * Can be used by: journalpost
+     * n5mdk: M082 journalposttype
+     */
+    protected function handleRecordType()
+    {
+        $object = end($this->stack);
+        $object->setRegistryEntryType($this->currentCdata);
+    }
+
+    /**
+     * function handleRecordYear()
+     * Can be used by: journalpost
+     * n5mdk: M013 journalaar
+     */
+    protected function handleRecordYear()
+    {
+        $object = end($this->stack);
+        $object->setRecordYear($this->currentCdata);
+    }
+
+    /**
+     * function handleReferenceSeries()
+     * Can be used by: mappe, registrering, dokumentbeskrivelse
+     * n5mdk: M208 referanseArkivdel
+     */
+    protected function handleReferenceSeries()
+    {
+        $object = end($this->stack);
+        $object->addReferenceSeries($this->currentCdata);
+    }
+
+    /**
+     * function referanseAvskrivesAvJournalpost()
+     * Can be used by: journalpost
+     * n5mdk: M215 referanseAvskrivesAvJournalpost
+     */
+    protected function handleReferenceSignedOffByRegistryEntry()
+    {
+        $object = end($this->stack);
+        $object->setReferenceSignedOffByRegistryEntry($this->currentCdata);
+    }
+
+    /**
+     * function handleReferenceDocumentFile()
+     * Can be used by: dokumentobjekt
+     * n5mdk: M218 referanseDokumentfil
+     */
+    protected function handleReferenceDocumentFile()
+    {
+        $object = end($this->stack);
+        $object->setReferenceDocumentFile($this->currentCdata);
+    }
+
+    /**
+     * function handleReferencePrecursor()
+     * Can be used by: arkivdel
+     * n5mdk: M202 referanseForloeper
+     */
+    protected function handleReferencePrecursor()
+    {
+        $object = end($this->stack);
+        $object->setReferencePrecursor($this->currentCdata);
+    }
+
+    /**
+     * function handleReferencePreviousMeeting()
+     * Can be used by: moetemappe
+     * n5mdk: M221 referanseForrigeMoete
+     */
+    protected function handleReferencePreviousMeeting()
+    {
+        $object = end($this->stack);
+        $object->setReferencePreviousMeeting($this->currentCdata);
+    }
+
+    /**
+     * function handleReferenceNextMeeting()
+     * Can be used by: moetemappe
+     * n5mdk: M222 referanseNesteMoete
+     */
+    protected function handleReferenceNextMeeting()
+    {
+        $object = end($this->stack);
+        $object->setReferenceNextMeeting($this->currentCdata);
+    }
+
+    /**
+     * function handleReferenceSuccessor()
+     * Can be used by: arkivdel
+     * n5mdk: M203 referanseArvtaker
+     */
+    protected function handleReferenceSuccessor()
+    {
+        $object = end($this->stack);
+        $object->setReferenceSuccessor($this->currentCdata);
+    }
+
+    /**
+     * function handleReviewFOIDate()
+     * Can be used by: journalpost
+     * n5mdk: M110 offentlighetsvurdertDato
+     */
+    protected function handleReviewFOIDate()
+    {
+        $object = end($this->stack);
+        $object->setReviewFOIDate($this->currentCdata);
+    }
+
+    /**
+     * function handleReferenceToClass()
+     * Can be used by: klasse
+     * n5mdk: M219 referanseTilKlasse
+     */
+    protected function handleReferenceToClass()
+    {
+        $object = end($this->stack);
+        $object->setReferenceToClass($this->currentCdata);
+    }
+
+    /**
+     * function handleReferenceToFile()
+     * Can be used by: mappe, basisregistrering
+     * n5mdk: M210 referanseTilMappe
+     */
+    protected function handleReferenceToFile()
+    {
+        $object = end($this->stack);
+        $object->setReferenceToFile($this->currentCdata);
+    }
+
+    /**
+     * function handleReferenceFromMeetingRecord()
+     * Can be used by: moeteregistrering
+     * n5mdk: M224 referanseFraMoeteregistrering
+     */
+    protected function handleReferenceFromMeetingRecord()
+    {
+        $object = end($this->stack);
+        $object->setReferenceFromMeetingRecord($this->currentCdata);
+    }
+
+    /**
+     * function handleReferenceToMeetingRecord()
+     * Can be used by: moeteregistrering
+     * n5mdk: M223 referanseTilMoeteregistrering
+     */
+    protected function handleReferenceToMeetingRecord()
+    {
+        $object = end($this->stack);
+        $object->seteferenceToMeetingRecord($this->currentCdata);
+    }
+
+    /**
+     * function handleReferenceToRecord()
+     * Can be used by: mappe, basisregistrering
+     * n5mdk: M212 referanseTilMappe
+     */
+    protected function handleReferenceToRecord()
+    {
+        $object = end($this->stack);
+        $object->setReferenceToRecord($this->currentCdata);
+    }
+
+   /**
+     * function handleScreeningAuthority()
+     * Can be used by: skjerming
+     * n5mdk: M501 skjermingshjemmel
+     */
+    protected function handleScreeningAuthority()
+    {
+        $object = end($this->stack);
+        $object->setScreeningAuthority($this->currentCdata);
+    }
+
+    /**
+     * function handleScreeningCeasesDate()
+     * Can be used by: skjerming
+     * n5mdk: M505 skjermingOpphoererDato
+     */
+    protected function handleScreeningCeasesDate()
+    {
+        $object = end($this->stack);
+        $object->setScreeningCeasesDate($this->currentCdata);
+    }
+
+    /**
+     * function handleScreeningDocument()
+     * Can be used by: skjerming
+     * n5mdk: M503 skjermingDokument
+     */
+    protected function handleScreeningDocument()
+    {
+        $object = end($this->stack);
+        $object->setScreeningDocument($this->currentCdata);
+    }
+
+    /**
+     * function handleScreeningDuration()
+     * Can be used by: skjerming
+     * n5mdk: M504 skjermingsvarighet
+     */
+    protected function handleScreeningDuration()
+    {
+        $object = end($this->stack);
+        $object->setScreeningDuration($this->currentCdata);
+    }
+
+    /**
+     * function handleScreeningMetadata()
+     * Can be used by: skjerming
+     * n5mdk: M502 skjermingsMetadata
+     */
+    protected function handleScreeningMetadata() {
+        $object = end($this->stack);
+        $object->setScreeningMetadata($this->currentCdata);
+    }
+
+    /**
+     * function handleSecondaryClassification()
+     * Can be used by: arkivdel
+     * n5mdk: M209 referanseSekundaerKlassifikasjon
+     */
+    protected function handleSecondaryClassification()
+    {
+        $object = end($this->stack);
+        $object->setSecondaryClassification($this->currentCdata);
+    }
+
+    /**
+     * function handleSentDate()
+     * Can be used by: journalpost
+     * n5mdk: M105 sendtDato
+     */
+    protected function handleSentDate()
+    {
+        $object = end($this->stack);
+        $object->setSentDate($this->currentCdata);
+    }
+
+    /**
+     * function handleSeriesEndDate()
+     * Can be used by: arkivdel
+     * n5mdk: M108 arkivperiodeSluttDato
+     */
+    protected function handleSeriesEndDate()
+    {
+        $object = end($this->stack);
+        $object->setSeriesEndDate($this->currentCdata);
+    }
+
+    /**
+     * function handleSeriesStatus()
+     * Can be used by: arkivdel
+     * n5mdk: M051 arkivdelstatus
+     */
+    protected function handleSeriesStatus()
+    {
+        $object = end($this->stack);
+        $object->setSeriesStatus($this->currentCdata);
+    }
+
+    /**
+     * function handleSeriesStartDate()
+     * Can be used by: arkivdel
+     * n5mdk: M107 arkivperiodeStartDato
+     */
+    protected function handleSeriesStartDate()
+    {
+        $object = end($this->stack);
+        $object->setSeriesStartDate($this->currentCdata);
+    }
+
+    /**
+     * function handleSignOffDate()
+     * Can be used by: journalpost
+     * n5mdk: M617 avskrivningsdato
+     */
+    protected function handleSignOffDate()
+    {
+        $object = end($this->stack);
+        $object->setSignOffDate($this->currentCdata);
+    }
+
+    /**
+     * function handleSignOffBy()
+     * Can be used by: journalpost
+     * n5mdk: M618 avskrevetAv
+     */
+    protected function handleSignOffBy()
+    {
+        $object = end($this->stack);
+        $object->setSignOffBy($this->currentCdata);
+    }
+
+    /**
+     * function handleSignOffMethod()
+     * Can be used by: journalpost
+     * n5mdk: M619 avskrivningsmaate
+     */
+    protected function handleSignOffMethod()
+    {
+        $object = end($this->stack);
+        $object->setSignOffMethod($this->currentCdata);
+    }
+
+    /**
+     * function handleStorageLocation()
+     * Can be used by: arkiv, arkivdel, mappe, basisregistrering, dokumentbeskrivelse
+     * n5mdk: M301 oppbevaringssted
+     */
+    protected function handleStorageLocation()
+    {
+        $object = end($this->stack);
+        $object->addReferenceStorageLocation($this->currentCdata);
+    }
+
+    /**
+     * function handleSourceOfLaw()
+     * Can be used by: presedens
+     * n5mdk: M312 rettskildefaktor
+     */
+    protected function handleSourceOfLaw()
+    {
+        $object = end($this->stack);
+        $object->setSourceOfLaw($this->currentCdata);
+    }
+    /**
+     * function handleSystemId()
+     * Can be used by: Fonds, Series, ClassificationSystem, Class, File, Record, DocumentDescription, DocumentObject, Author,
+     * n5mdk: M001 systemID
+     */
+    protected function handleSystemId()
+    {
+        $object = end($this->stack);
+        $object->setSystemId($this->currentCdata);
+    }
+
+    /**
+     * function handleTelephoneNumber()
+     * Can be used by: telefonnummer
+     * n5mdk: M411 telefonnummer
+     */
+    protected function handleTelephoneNumber()
+    {
+        $object = end($this->stack);
+        $object->setTelephoneNumber($this->currentCdata);
+    }
+
+    /**
+     * function: handleTitle()
+     * Can be used by: arkiv, arkivdel, klassifikasjonssystem, klasse, mappe, basisregistrering,
+     *                 dokumentbeskrivelse, presedens
+     * n5mdk: M020 Tittel
+     */
+    protected function handleTitle()
+    {
+        $object = end($this->stack);
+        $object->setTitle($this->currentCdata);
+    }
+
+    /**
+     * function: handleVariantFormat()
+     * Can be used by: dokumentobjekt
+     * n5mdk: M700 variantformat
+     */
+    protected function handleVariantFormat()
+    {
+        $object = end($this->stack);
+        $object->setVariantFormat($this->currentCdata);
+    }
+
+    /**
+     * function handleVersionNumber()
+     * Can be used by :
+     * n5mdk: M005 versjonsnummer
+     */
+    protected function handleVersionNumber()
+    {
+        $object = end($this->stack);
+        $object->setVersionNumber($this->currentCdata);
+    }
+
+    /**
+     * function handleVerifiedBy()
+     * Can be used by: elektronisksignatur
+     * n5mdk: M623 verifisertAv
+     */
+    protected function handleVerifiedBy()
+    {
+        $object = end($this->stack);
+        $object->setVerifiedBy($this->currentCdata);
+    }
+
+    /**
+     * function handleVerifiedDate()
+     * Can be used by: elektronisksignatur
+     * n5mdk: M622 verifisertDato
+     */
+    protected function handleVerifiedDate()
+    {
+        $object = end($this->stack);
+        $object->setVerifiedDate($this->currentCdata);
+    }
+
+
+    /**
+     * function handleWorkflow()
+     * Can be used by: dokumentflyt
+     * n5mdk: M665 flytFra
+     */
+    protected function handleWorkflowFrom()
+    {
+        $object = end($this->stack);
+        $object->setWorkflowFrom($this->currentCdata);
+    }
+
+    /**
+     * function handleWorkflowTo()
+     * Can be used by: dokumentflyt
+     * n5mdk: M660 flytTil
+     */
+    protected function handleWorkflowTo()
+    {
+        $object = end($this->stack);
+        $object->setWorkflowTo($this->currentCdata);
+    }
+
+    /**
+     * function handleWorkflowReceivedDate()
+     * Can be used by: dokumentflyt
+     * n5mdk: M661 flytMottattDato
+     */
+    protected function handleWorkflowReceivedDate()
+    {
+        $object = end($this->stack);
+        $object->setWorkflowReceivedDate($this->currentCdata);
+    }
+
+    /**
+     * function handleWorkflowSentDate()
+     * Can be used by: dokumentflyt
+     * n5mdk: M662 flytSendtDato
+     */
+    protected function handleWorkflowSentDate()
+    {
+        $object = end($this->stack);
+        $object->setWorkflowSentDate($this->currentCdata);
+    }
+
+    /**
+     * function handleWorkflowStatus()
+     * Can be used by: dokumentflyt
+     * n5mdk: M663 flytStatus
+     */
+    protected function handleWorkflowStatus()
+    {
+        $object = end($this->stack);
+        $object->setWorkflowStatus($this->currentCdata);
+    }
+
+    /**
+     * function handleWorkflowComment()
+     * Can be used by: dokumentflyt
+     * n5mdk: M664 flytMerknad
+     */
+    protected function handleWorkflowComment()
+    {
+        $object = end($this->stack);
+        $object->setWorkflowComment($this->currentCdata);
+    }
+
+    /**
+     * The following functions are provided to subclasses so that
+     * they can be overridden.
+     */
+    public function preProcessFonds() {}
+    public function preProcessFondsCreator() {}
+    public function preProcessSeries() {}
+    public function preProcessClassificationSystem() {}
+    public function preProcessClass() {}
+    public function preProcessFile() {}
+    public function preProcessComment() {}
+    public function preProcessRecord() {}
+    public function preProcessPrecedence() {}
+    public function preProcessElectronicSignature() {}
+    public function preProcessClassfication() {}
+    public function preProcessSignOff() {}
+    public function preProcessWorkflow() {}
+    public function preProcessCorrespondencePart() {}
+    public function preProcessDocumentDescription() {}
+    public function preProcessDocumentObject() {}
+    public function preProcessCrossReference() {}
+    public function preProcessDeletion() {}
+    public function preProcessDisposal() {}
+    public function preProcessDisposalUndertaken() {}
+    public function postProcessPrecedence() {}
+    public function preProcessCaseParty() {}
+    public function preProcessScreening() {}
+    public function preProcessConversion() {}
+
+    public function postProcessFonds() {}
+    public function postProcessFondsCreator() {}
+    public function postProcessSeries() {}
+    public function postProcessClassificationSystem() {}
+    public function postProcessClass() {}
+    public function postProcessFile() {}
+    public function postProcessComment() {}
+    public function postProcessRecord() {}
+    public function postProcesspostcedence() {}
+    public function postProcessElectronicSignature() {}
+    public function postProcessClassfication() {}
+    public function postProcessSignOff() {}
+    public function postProcessWorkflow() {}
+    public function postProcessCorrespondencePart() {}
+    public function postProcessDocumentDescription() {}
+    public function postProcessDocumentObject() {}
+    public function postProcessCrossReference() {}
+    public function postProcessDeletion() {}
+    public function postProcessDisposal() {}
+    public function postProcessDisposalUndertaken() {}
+    public function postProcesspostcedence() {}
+    public function postProcessCaseParty() {}
+    public function postProcessScreening() {}
+    public function postProcessConversion() {}
+
+    /**
+     *
+     * @return the $numberOfFondsProcessed
+     */
+    public function getNumberOfFondsProcessed()
+    {
+        return $this->numberOfFondsProcessed;
+    }
+
+    /**
+     *
+     * @return the $numberOfFondsCreatorProcessed
+     */
+    public function getNumberOfFondsCreatorProcessed()
+    {
+        return $this->numberOfFondsCreatorProcessed;
+    }
+
+    /**
+     *
+     * @return the $numberOfSeriesProcessed
+     */
+    public function getNumberOfSeriesProcessed()
+    {
+        return $this->numberOfSeriesProcessed;
+    }
+
+    /**
+     *
+     * @return the $numberOfClassificationSystemProcessed
+     */
+    public function getNumberOfClassificationSystemProcessed()
+    {
+        return $this->numberOfClassificationSystemProcessed;
+    }
+
+    /**
+     *
+     * @return the $numberOfClassProcessed
+     */
+    public function getNumberOfClassProcessed()
+    {
+        return $this->numberOfClassProcessed;
+    }
+
+    /**
+     *
+     * @return the $numberOfFileProcessed
+     */
+    public function getNumberOfFileProcessed()
+    {
+        return $this->numberOfFileProcessed;
+    }
+
+    /**
+     *
+     * @return the $numberOfCaseFileProcessed
+     */
+    public function getNumberOfCaseFileProcessed()
+    {
+        return $this->numberOfCaseFileProcessed;
+    }
+
+    /**
+     *
+     * @return the $numberOfRecordProcessed
+     */
+    public function getNumberOfRecordProcessed()
+    {
+        return $this->numberOfRecordProcessed;
+    }
+
+    /**
+     *
+     * @return the $numberOfBasicRecordProcessed
+     */
+    public function getNumberOfBasicRecordProcessed()
+    {
+        return $this->numberOfBasicRecordProcessed;
+    }
+
+    /**
+     *
+     * @return the $numberOfRegistryEntryProcessed
+     */
+    public function getNumberOfRegistryEntryProcessed()
+    {
+        return $this->numberOfRegistryEntryProcessed;
+    }
+
+    /**
+     *
+     * @return the $numberOfDocumentDescriptionProcessed
+     */
+    public function getNumberOfDocumentDescriptionProcessed()
+    {
+        return $this->numberOfDocumentDescriptionProcessed;
+    }
+
+    /**
+     *
+     * @return the $numberOfDocumentObjectProcessed
+     */
+    public function getNumberOfDocumentObjectProcessed()
+    {
+        return $this->numberOfDocumentObjectProcessed;
+    }
+
+    /**
+     *
+     * @return the $numberOfSignOffProcessed
+     */
+    public function getNumberOfSignOffProcessed()
+    {
+        return $this->numberOfSignOffProcessed;
+    }
+
+    /**
+     *
+     * @return the $numberOfCorrespondancePartProcessed
+     */
+    public function getNumberOfCorrespondancePartProcessed()
+    {
+        return $this->numberOfCorrespondancePartProcessed;
+    }
+
+    /**
+     * @return the $stack
+     */
+    public function getStack()
+    {
+        return $this->stack;
+    }
+
+    /**
+     * @return the $currentCdata
+     */
+    public function getCurrentCdata()
+    {
+        return $this->currentCdata;
+    }
+
+    /**
+     * @return the $numberOfMeetingFileProcessed
+     */
+    public function getNumberOfMeetingFileProcessed()
+    {
+        return $this->numberOfMeetingFileProcessed;
+    }
+
+    /**
+     * @return the $numberOfMeetingRecordProcessed
+     */
+    public function getNumberOfMeetingRecordProcessed()
+    {
+        return $this->numberOfMeetingRecordProcessed;
+    }
+
+    /**
+     * @return the $numberOfClassificationProcessed
+     */
+    public function getNumberOfClassificationProcessed()
+    {
+        return $this->numberOfClassificationProcessed;
+    }
+
+    /**
+     * @return the $numberOfDeletionProcessed
+     */
+    public function getNumberOfDeletionProcessed()
+    {
+        return $this->numberOfDeletionProcessed;
+    }
+
+    /**
+     * @return the $numberOfDisposalProcessed
+     */
+    public function getNumberOfDisposalProcessed()
+    {
+        return $this->numberOfDisposalProcessed;
+    }
+
+    /**
+     * @return the $numberOfDisposalUndertakenProcessed
+     */
+    public function getNumberOfDisposalUndertakenProcessed()
+    {
+        return $this->numberOfDisposalUndertakenProcessed;
+    }
+
+    /**
+     * @return the $numberOfPrecedenceProcessed
+     */
+    public function getNumberOfPrecedenceProcessed()
+    {
+        return $this->numberOfPrecedenceProcessed;
+    }
+
+    /**
+     * @return the $numberOfCrossReferenceProcessed
+     */
+    public function getNumberOfCrossReferenceProcessed()
+    {
+        return $this->numberOfCrossReferenceProcessed;
+    }
+
+    /**
+     * @return the $numberOfElectronicSignatureProcessed
+     */
+    public function getNumberOfElectronicSignatureProcessed()
+    {
+        return $this->numberOfElectronicSignatureProcessed;
+    }
+
+    /**
+     * @return the $numberOfScreeningProcessed
+     */
+    public function getNumberOfScreeningProcessed()
+    {
+        return $this->numberOfScreeningProcessed;
+    }
+
+    /**
+     * @return the $numberOfCommentProcessed
+     */
+    public function getNumberOfCommentProcessed()
+    {
+        return $this->numberOfCommentProcessed;
+    }
+
+    /**
+     * @return the $numberOfConversionProcessed
+     */
+    public function getNumberOfConversionProcessed()
+    {
+        return $this->numberOfConversionProcessed;
+    }
+
+    /**
+     * @return the $numberOfCasePartyProcessed
+     */
+    public function getNumberOfCasePartyProcessed()
+    {
+        return $this->numberOfCasePartyProcessed;
+    }
+
+    /**
+     * @return the $numberOfWorkflowProcessed
+     */
+    public function getNumberOfWorkflowProcessed()
+    {
+        return $this->numberOfWorkflowProcessed;
+    }
+
+    /**
+     * @return the $graderingIsSimpleType
+     */
+    public function getGraderingIsSimpleType()
+    {
+        return $this->graderingIsSimpleType;
+    }
+
+    /**
+     * @return the $logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    public function getStatistics()
+    {
+        return $this->statistics;
+    }
+
+}
+
 ?>

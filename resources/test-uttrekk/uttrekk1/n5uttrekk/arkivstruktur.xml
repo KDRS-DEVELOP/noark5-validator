@@ -60,7 +60,7 @@
             <format>pdf/a</format>
             <opprettetDato>2011-09-09T14:09:13</opprettetDato>
             <opprettetAv>Lars H.Hansen</opprettetAv>
-            <referanseDokumentfil>dokumenter/1c555c2e-7f2f-492c-a770-c7bc18c802c6.pdf</referanseDokumentfil>
+            <referanseDokumentfil>dokumenter/1c555c2e-7f2f-492c-a770-c7bc18c902c6.pdf</referanseDokumentfil>
             <sjekksum>9169d5aa04f63a0ca7f52aae1435d208528d2b6ef8f96c35d8f33086872eca19</sjekksum>
             <sjekksumAlgoritme>SHA-256</sjekksumAlgoritme>
             <filstoerrelse>87 kB</filstoerrelse>
@@ -87,11 +87,15 @@
           <postadresse> drammensveien 7</postadresse>
           <postnummer>0271</postnummer>
           <epostadresse>pstrand@gmail.com</epostadresse>
-          <telefonnummer>NULL</telefonnummer>
-          <kontaktperson>NULL</kontaktperson>
+          <telefonnummer>43654388</telefonnummer>
           <administrativEnhet>arkivtjenesten</administrativEnhet>
           <saksbehandler>Lars H.Hansen</saksbehandler>
         </korrespondansepart>
+        <avskrivning>
+        	<avskrivningsdato>2011-09-09</avskrivningsdato>
+        	<avskrevetAv>Lars H.Hansen</avskrevetAv>
+        	<avskrivningsmaate>Besvart med e-post</avskrivningsmaate>
+        </avskrivning>
       </registrering>
       <registrering xsi:type="journalpost">
         <systemID>f080dee0-97c8-4d15-8832-622f93de318b</systemID>
@@ -120,7 +124,7 @@
             <opprettetDato>2011-10-09T14:49:10</opprettetDato>
             <opprettetAv>Lars H. Hansen</opprettetAv>
             <referanseDokumentfil>dokumenter/14305c90-99a2-4444-bb76-63ddae8a2e98.pdf</referanseDokumentfil>
-            <sjekksum>2ce321351a886f089220a3adac0f3d1b07c872b08343fa5a3af708ff0f805911</sjekksum>
+            <sjekksum>2ce321351a886f089220a9adac0f3d1b07c872b08343fa5a3af708ff0f805911</sjekksum>
             <sjekksumAlgoritme>SHA-256</sjekksumAlgoritme>
             <filstoerrelse>87kB</filstoerrelse>
           </dokumentobjekt>

@@ -44,10 +44,10 @@ class ArkivstrukturDBImporter extends ArkivstrukturParser
      *
      *
      */
-    public function __construct($directory, $entityManager, $onlyParse)
+    public function __construct($directory, $entityManager)
     {
         $this->entityManager = $entityManager;
-        parent::__construct($directory, null, null, $onlyParse);
+        parent::__construct($directory, null, null);
     }
 
     public function preProcessClassificationSystem()

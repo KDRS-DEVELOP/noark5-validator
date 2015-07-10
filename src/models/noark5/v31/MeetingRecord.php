@@ -1,12 +1,11 @@
 <?php
+namespace models\noark5\v31;
 require_once ('models/noark5/v31/BasicRecord.php');
-
 
 /**
  * @Entity @Table(name="meeting_record")
  **/
-
-class MeetingRecord //extends BasicRecord
+class MeetingRecord extends BasicRecord
 {
     /** TODO: REMOVE @Id @Column(type="bigint", name="pk_record_id", nullable=false) @GeneratedValue **/
     protected $id;
@@ -42,6 +41,11 @@ class MeetingRecord //extends BasicRecord
     public function __construct()
     {
         parent::__construct();
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
     public function getMeetingRecordType()

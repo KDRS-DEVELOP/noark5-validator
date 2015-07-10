@@ -1,5 +1,5 @@
 <?php
-
+namespace models\noark5\v31;
 /**
  * @Entity @Table(name="class")
  **/
@@ -76,6 +76,24 @@ class Klass
     // Links to Records
     /** @OneToMany(targetEntity="File", mappedBy="referenceClass", fetch="EXTRA_LAZY") **/
     protected $referenceRecord;
+
+    // Links to CrossReference
+    /** @OneToMany(targetEntity="CrossReference", mappedBy="referenceClass", fetch="EXTRA_LAZY") **/
+    protected $referenceCrossReference;
+
+    // Link to Classified
+    /** @ManyToOne(targetEntity="Classified", fetch="EXTRA_LAZY")
+     *   @JoinColumn(name="class_classified_id",
+     *        referencedColumnName="pk_classified_id")
+     **/
+    protected $referenceClassified;
+
+    // Link to Disposal
+    /** @ManyToOne(targetEntity="Disposal", fetch="EXTRA_LAZY")
+     *   @JoinColumn(name="class_disposal_id",
+     *        referencedColumnName="pk_disposal_id")
+     **/
+     protected $referenceDisposal;
 
     function __construct()
     {}
@@ -244,6 +262,39 @@ class Klass
     public function setReferenceRecord($referenceRecord)
     {
         $this->referenceRecord = $referenceRecord;
+        return $this;
+    }
+
+    public function getReferenceCrossReference()
+    {
+        return $this->referenceCrossReference;
+    }
+
+    public function setReferenceCrossReference($referenceCrossReference)
+    {
+        $this->referenceCrossReference = $referenceCrossReference;
+        return $this;
+    }
+
+    public function getReferenceClassified()
+    {
+        return $this->referenceClassified;
+    }
+
+    public function setReferenceClassified($referenceClassified)
+    {
+        $this->referenceClassified = $referenceClassified;
+        return $this;
+    }
+
+    public function getReferenceDisposal()
+    {
+        return $this->referenceDisposal;
+    }
+
+    public function setReferenceDisposal($referenceDisposal)
+    {
+        $this->referenceDisposal = $referenceDisposal;
         return $this;
     }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="http://logging.apache.org/log4php/">
+
+    <appender name="validatorAppenderFile" class="LoggerAppenderFile">
+        <layout class="LoggerLayoutSimple" />
+ 		<param name="file" value="kdrs-toolbox-validator-noark5.log" />
+    </appender>
+
+    <appender name="validatorAppenderConsole" class="LoggerAppenderConsole">
+        <layout class="LoggerLayoutSimple" />
+ 		<param name="file" value="kdrs-toolbox-validator-noark5.log" />
+    </appender>
+
+    <logger name="log2fileAndConsole">
+        <appender_ref ref="validatorAppenderFile" />
+        <appender_ref ref="validatorAppenderConsole" />
+    </logger>
+    <logger name="log2file">
+        <appender_ref ref="validatorAppenderFile" />
+    </logger>
+    <logger name="log2Console">
+        <appender_ref ref="validatorAppenderConsole" />
+    </logger>
+
+</configuration>

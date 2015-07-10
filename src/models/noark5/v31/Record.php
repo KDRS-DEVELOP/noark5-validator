@@ -1,20 +1,18 @@
 <?php
-
+namespace models\noark5\v31;
 require_once ('models/noark5/v31/Series.php');
 require_once ('models/noark5/v31/File.php');
 require_once ('models/noark5/v31/Klass.php');
 require_once ('models/noark5/v31/StorageLocation.php');
 require_once ('models/noark5/v31/DocumentDescription.php');
 require_once ('models/noark5/v31/DocumentObject.php');
-//require_once ('models/noark5/v31/BasicRecord.php');
-//require_once ('models/noark5/v31/RegistryEntry.php');
 require_once ('utils/Constants.php');
 
 /**
   * @Entity @Table(name="record")
   * @InheritanceType("JOINED")
   * @DiscriminatorColumn(name="discr", type="string")
-  * @DiscriminatorMap({"record" = "Record", "basicrecord" = "BasicRecord", "registryentry" = "RegistryEntry"})
+  * @DiscriminatorMap({"record" = "Record", "basicrecord" = "BasicRecord", "registryentry" = "RegistryEntry", "meetingrecord" = "MeetingRecord"})
   *
   **/
 class Record
@@ -79,8 +77,26 @@ class Record
     /** @OneToMany(targetEntity="DocumentObject", mappedBy="referenceRecord", fetch="EXTRA_LAZY") **/
     protected $referenceDocumentObject;
 
+    // Links to CrossReference
+    /** @OneToMany(targetEntity="CrossReference", mappedBy="referenceRecord", fetch="EXTRA_LAZY") **/
+    protected $referenceCrossReference;
+
     /** @Embedded(class = "Screening") */
     protected $screening;
+
+    // Link to Classified
+    /** @ManyToOne(targetEntity="Classified", fetch="EXTRA_LAZY")
+     *   @JoinColumn(name="record_classified_id",
+     *        referencedColumnName="pk_classified_id")
+     **/
+    protected $referenceClassified;
+
+    // Link to Disposal
+    /** @ManyToOne(targetEntity="Disposal", fetch="EXTRA_LAZY")
+     *   @JoinColumn(name="record_disposal_id",
+     *        referencedColumnName="pk_disposal_id")
+     **/
+     protected $referenceDisposal;
 
     function __construct()
     {}
@@ -235,6 +251,40 @@ class Record
     {
         return __METHOD__ . " id[" . $this->id . "], " . "systemId[" . $this->systemId . "]";
     }
+
+    public function getReferenceCrossReference()
+    {
+        return $this->referenceCrossReference;
+    }
+
+    public function setReferenceCrossReference($referenceCrossReference)
+    {
+        $this->referenceCrossReference = $referenceCrossReference;
+        return $this;
+    }
+
+    public function getReferenceClassified()
+    {
+        return $this->referenceClassified;
+    }
+
+    public function setReferenceClassified($referenceClassified)
+    {
+        $this->referenceClassified = $referenceClassified;
+        return $this;
+    }
+
+    public function getReferenceDisposal()
+    {
+        return $this->referenceDisposal;
+    }
+
+    public function setReferenceDisposal($referenceDisposal)
+    {
+        $this->referenceDisposal = $referenceDisposal;
+        return $this;
+    }
+
 
 
 }

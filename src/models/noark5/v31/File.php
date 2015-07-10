@@ -1,4 +1,5 @@
 <?php
+namespace models\noark5\v31;
 use Doctrine\Common\Collections\ArrayCollection;
 require_once ('models/noark5/v31/Series.php');
 require_once ('models/noark5/v31/Klass.php');
@@ -102,9 +103,26 @@ class File
     protected $referenceClass;
 
     // Links to Records
-    /** @OneToMany(targetEntity="Record", mappedBy="referenceRecord", cascade={"persist", "remove"}) **/
+    /** @OneToMany(targetEntity="Record", mappedBy="referenceFile", cascade={"persist", "remove"}) **/
     protected $referenceRecord;
 
+    // Links to CrossReference
+    /** @OneToMany(targetEntity="CrossReference", mappedBy="referenceFile", fetch="EXTRA_LAZY") **/
+    protected $referenceCrossReference;
+
+    // Link to Classified
+    /** @ManyToOne(targetEntity="Classified", fetch="EXTRA_LAZY")
+     *   @JoinColumn(name="file_classified_id",
+     *        referencedColumnName="pk_classified_id")
+     **/
+    protected $referenceClassified;
+
+    // Link to Disposal
+    /** @ManyToOne(targetEntity="Disposal", fetch="EXTRA_LAZY")
+     *   @JoinColumn(name="file_disposal_id",
+     *        referencedColumnName="pk_disposal_id")
+     **/
+     protected $referenceDisposal;
 
     public function __construct() {
         $this->referenceChildFile = new ArrayCollection();
@@ -344,9 +362,42 @@ class File
         return $this;
     }
 
+    public function getReferenceCrossReference()
+    {
+        return $this->referenceCrossReference;
+    }
+
+    public function setReferenceCrossReference($referenceCrossReference)
+    {
+        $this->referenceCrossReference = $referenceCrossReference;
+        return $this;
+    }
+
     public function __toString()
     {
         return "id[" . $this->id . "], " . "systemId[" . $this->systemId . "]";
+    }
+
+    public function getReferenceClassified()
+    {
+        return $this->referenceClassified;
+    }
+
+    public function setReferenceClassified($referenceClassified)
+    {
+        $this->referenceClassified = $referenceClassified;
+        return $this;
+    }
+
+    public function getReferenceDisposal()
+    {
+        return $this->referenceDisposal;
+    }
+
+    public function setReferenceDisposal($referenceDisposal)
+    {
+        $this->referenceDisposal = $referenceDisposal;
+        return $this;
     }
 }
 

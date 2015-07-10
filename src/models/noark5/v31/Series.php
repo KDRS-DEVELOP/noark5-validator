@@ -1,4 +1,5 @@
 <?php
+namespace models\noark5\v31;
 use Doctrine\Common\Collections\ArrayCollection;
 require_once ('models/noark5/v31/Fonds.php');
 require_once ('utils/Constants.php');
@@ -97,6 +98,34 @@ class Series
     // Links to Records
     /** @OneToMany(targetEntity="Record", mappedBy = "referenceSeries", fetch="EXTRA_LAZY") **/
     protected $referenceRecord;
+
+    // Link to Classified
+    /** @ManyToOne(targetEntity="Classified", fetch="EXTRA_LAZY")
+     *   @JoinColumn(name="series_classified_id",
+     *        referencedColumnName="pk_classified_id")
+     **/
+    protected $referenceClassified;
+
+    // Link to DisposalUndertaken
+    /** @ManyToOne(targetEntity="DisposalUndertaken", fetch="EXTRA_LAZY")
+     *   @JoinColumn(name="series_disposal_undertaken_id",
+     *        referencedColumnName="pk_disposal_undertaken_id")
+     **/
+    protected $referenceDisposalUndertaken;
+
+    // Link to Disposal
+    /** @ManyToOne(targetEntity="Disposal", fetch="EXTRA_LAZY")
+     *   @JoinColumn(name="series_disposal_id",
+     *        referencedColumnName="pk_disposal_id")
+     **/
+    protected $referenceDisposal;
+
+    // Link to Deletion
+    /** @ManyToOne(targetEntity="Deletion", fetch="EXTRA_LAZY")
+     *   @JoinColumn(name="series_deletion_id",
+     *        referencedColumnName="pk_deletion_id")
+     **/
+    protected $referenceDeletion;
 
     public function __construct()
     {
@@ -324,6 +353,50 @@ class Series
 
     public function addReferenceRecord($record) {
         $this->referenceRecord[] = $record;
+    }
+
+    public function getReferenceClassified()
+    {
+        return $this->referenceClassified;
+    }
+
+    public function setReferenceClassified($referenceClassified)
+    {
+        $this->referenceClassified = $referenceClassified;
+        return $this;
+    }
+
+    public function getReferenceDisposalUndertaken()
+    {
+        return $this->referenceDisposalUndertaken;
+    }
+
+    public function setReferenceDisposalUndertaken($referenceDisposalUndertaken)
+    {
+        $this->referenceDisposalUndertaken = $referenceDisposalUndertaken;
+        return $this;
+    }
+
+    public function getReferenceDisposal()
+    {
+        return $this->referenceDisposal;
+    }
+
+    public function setReferenceDisposal($referenceDisposal)
+    {
+        $this->referenceDisposal = $referenceDisposal;
+        return $this;
+    }
+
+    public function getReferenceDeletion()
+    {
+        return $this->referenceDeletion;
+    }
+
+    public function setReferenceDeletion($referenceDeletion)
+    {
+        $this->referenceDeletion = $referenceDeletion;
+        return $this;
     }
 
     public function __toString()

@@ -1,8 +1,9 @@
 <?php
+namespace models\noark5\v31;
 require_once 'models/noark5/v31/ArkivUttrekkFile.php';
 
 
-class ArkivUttrekk
+class ArkivUttrekkDetails
 {
     protected $arkivstruktur;
     protected $offentligJournal;

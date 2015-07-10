@@ -24,10 +24,6 @@
 			<filetype>xsd</filetype>
 		</file>
 		<file>
-			<filename>addml.xsd</filename>
-			<filetype>xsd</filetype>
-		</file>
-		<file>
 			<filename>endringslogg.xml</filename>
 			<filetype>xml</filetype>
 		</file>

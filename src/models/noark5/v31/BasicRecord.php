@@ -1,11 +1,11 @@
 <?php
+namespace models\noark5\v31;
 use Doctrine\Common\Collections\ArrayCollection;
 require_once ('models/noark5/v31/Author.php');
 require_once ('models/noark5/v31/Record.php');
 require_once ('models/noark5/v31/StorageLocation.php');
 require_once ('models/noark5/v31/Keyword.php');
 
-//
 /**
  * @Entity @Table(name="basic_record")
  **/
@@ -58,6 +58,10 @@ class BasicRecord extends Record
      **/
     protected $referenceAuthor;
 
+    /**
+     * @OneToOne(targetEntity="ElectronicSignature", mappedBy="referenceBasicRecord")
+     **/
+    protected $referenceElectronicSignature;
 
     public function __construct()
     {
@@ -169,6 +173,17 @@ class BasicRecord extends Record
     public function setReferenceAuthor($referenceAuthor)
     {
         $this->referenceAuthor = $referenceAuthor;
+        return $this;
+    }
+
+    public function getReferenceElectronicSignature()
+    {
+        return $this->referenceElectronicSignature;
+    }
+
+    public function setReferenceElectronicSignature($referenceElectronicSignature)
+    {
+        $this->referenceElectronicSignature = $referenceElectronicSignature;
         return $this;
     }
 

@@ -1,4 +1,5 @@
 <?php
+namespace models\noark5\v31;
 require_once ('models/noark5/v31/DocumentDescription.php');
 require_once ('models/noark5/v31/Record.php');
 
@@ -65,6 +66,15 @@ class DocumentObject
 	 *         referencedColumnName="pk_record_id")
 	 **/
 	protected $referenceRecord;
+
+	// Links to Conversion
+	/** @OneToMany(targetEntity="Conversion", mappedBy="referenceDocumentObject", fetch="EXTRA_LAZY") **/
+	protected $referenceConversion;
+
+	/**
+	 * @OneToOne(targetEntity="ElectronicSignature", mappedBy="referenceBasicRecord")
+	 **/
+	protected $referenceElectronicSignature;
 
     public function __construct()
     {}
@@ -221,6 +231,28 @@ class DocumentObject
     public function setReferenceRecord($referenceRecord)
     {
         $this->referenceRecord = $referenceRecord;
+        return $this;
+    }
+
+    public function getReferenceConversion()
+    {
+        return $this->referenceConversion;
+    }
+
+    public function setReferenceConversion($referenceConversion)
+    {
+        $this->referenceConversion = $referenceConversion;
+        return $this;
+    }
+
+    public function getReferenceElectronicSignature()
+    {
+        return $this->referenceElectronicSignature;
+    }
+
+    public function setReferenceElectronicSignature($referenceElectronicSignature)
+    {
+        $this->referenceElectronicSignature = $referenceElectronicSignature;
         return $this;
     }
 

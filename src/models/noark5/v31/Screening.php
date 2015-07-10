@@ -1,4 +1,5 @@
 <?php
+namespace models\noark5\v31;
 
 /** @Embeddable */
 class Screening
@@ -12,23 +13,22 @@ class Screening
     protected $screeningAuthority;
 
     /** M502 - skjermingMetadata should be 1-M */
-    /** @Column(name = "screened_metadata", type = "string", nullable=true) **/
-    protected $screenedMetadata;
+    /** @Column(name = "screening_metadata", type = "string", nullable=true) **/
+    protected $screeningMetadata;
 
     /** M503 - skjermingDokument */
-    /** @Column(name = "screened_document", type = "string", nullable=true) **/
-    protected $screenedDocument;
+    /** @Column(name = "screening_document", type = "string", nullable=true) **/
+    protected $screeningDocument;
 
     /** M505 - skjermingOpphoererDato n4(JP.AGDATO)*/
     /** @Column(name = "screening_expires", type = "datetime", nullable=true) **/
-    protected $screenedExpires;
+    protected $screeningExpiresDate;
 
     /** M504 - skjermingsvarighet */
     /** @Column(name = "screening_duration", type = "string", nullable=true) **/
-    protected $screenedDuration;
+    protected $screeningDuration;
 
-    function __construct()
-    {}
+    function __construct(){}
 
     public function getAccessRestriction()
     {
@@ -52,47 +52,47 @@ class Screening
         return $this;
     }
 
-    public function getScreenedMetadata()
+    public function getscreeningMetadata()
     {
-        return $this->screenedMetadata;
+        return $this->screeningMetadata;
     }
 
-    public function setScreenedMetadata($screenedMetadata)
+    public function setscreeningMetadata($screeningMetadata)
     {
-        $this->screenedMetadata = $screenedMetadata;
+        $this->screeningMetadata = $screeningMetadata;
         return $this;
     }
 
-    public function getScreenedDocument()
+    public function getscreeningDocument()
     {
-        return $this->screenedDocument;
+        return $this->screeningDocument;
     }
 
-    public function setScreenedDocument($screenedDocument)
+    public function setscreeningDocument($screeningDocument)
     {
-        $this->screenedDocument = $screenedDocument;
+        $this->screeningDocument = $screeningDocument;
         return $this;
     }
 
-    public function getScreenedExpires()
+    public function getscreeningExpiresDate()
     {
-        return $this->screenedExpires;
+        return $this->screeningExpiresDate;
     }
 
-    public function setScreenedExpires($screenedExpires)
+    public function setscreeningExpires($screeningExpiresDate)
     {
-        $this->screenedExpires = $screenedExpires;
+        $this->screeningExpiresDate = $screeningExpiresDate;
         return $this;
     }
 
-    public function getScreenedDuration()
+    public function getscreeningDuration()
     {
-        return $this->screenedDuration;
+        return $this->screeningDuration;
     }
 
-    public function setScreenedDuration($screenedDuration)
+    public function setscreeningDuration($screeningDuration)
     {
-        $this->screenedDuration = $screenedDuration;
+        $this->screeningDuration = $screeningDuration;
         return $this;
     }
 

@@ -1,5 +1,5 @@
 <?php
-
+namespace models\noark5\v31;
 /**
  * @Entity @Table(name="case_party")
  **/
@@ -50,6 +50,121 @@ class CaseParty
 
     public function __construct()
     {}
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getCasePartyName()
+    {
+        return $this->casePartyName;
+    }
+
+    public function setCasePartyName($casePartyName)
+    {
+        $this->casePartyName = $casePartyName;
+        return $this;
+    }
+
+    public function getCasePartyRole()
+    {
+        return $this->casePartyRole;
+    }
+
+    public function setCasePartyRole($casePartyRole)
+    {
+        $this->casePartyRole = $casePartyRole;
+        return $this;
+    }
+
+    public function getPostalAddress()
+    {
+        return $this->postalAddress;
+    }
+
+    public function setPostalAddress($postalAddress)
+    {
+        $this->postalAddress = $postalAddress;
+        return $this;
+    }
+
+    public function getPostCode()
+    {
+        return $this->postCode;
+    }
+
+    public function setPostCode($postCode)
+    {
+        $this->postCode = $postCode;
+        return $this;
+    }
+
+    public function getPostalTown()
+    {
+        return $this->postalTown;
+    }
+
+    public function setPostalTown($postalTown)
+    {
+        $this->postalTown = $postalTown;
+        return $this;
+    }
+
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    public function setCountry($country)
+    {
+        $this->country = $country;
+        return $this;
+    }
+
+    public function getEmailAddress()
+    {
+        return $this->emailAddress;
+    }
+
+    public function setEmailAddress($emailAddress)
+    {
+        $this->emailAddress = $emailAddress;
+        return $this;
+    }
+
+    public function getTelephoneNumber()
+    {
+        return $this->telephoneNumber;
+    }
+
+    public function setTelephoneNumber($telephoneNumber)
+    {
+        $this->telephoneNumber = $telephoneNumber;
+        return $this;
+    }
+
+    public function getContactPerson()
+    {
+        return $this->contactPerson;
+    }
+
+    public function setContactPerson($contactPerson)
+    {
+        $this->contactPerson = $contactPerson;
+        return $this;
+    }
+
+    public function getReferenceCaseFile()
+    {
+        return $this->referenceCaseFile;
+    }
+
+    public function setReferenceCaseFile($referenceCaseFile)
+    {
+        $this->referenceCaseFile = $referenceCaseFile;
+        return $this;
+    }
 
 }
 

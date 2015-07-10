@@ -1,7 +1,7 @@
 <?php
+namespace models\noark5\v31;
 
-
-class ArkivUttrekkFile
+class ArkivUttrekkNoark5File
 {
 
     protected $filename;

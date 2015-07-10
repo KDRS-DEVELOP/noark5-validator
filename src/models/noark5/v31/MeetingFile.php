@@ -1,6 +1,6 @@
 <?php
+namespace models\noark5\v31;
 require_once ('models/noark5/v31/File.php');
-
 
 /**
  * @Entity @Table(name="meeting_file")

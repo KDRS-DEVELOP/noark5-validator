@@ -1,4 +1,6 @@
 <?php
+namespace models\noark5\v31;
+
 use Doctrine\Common\Collections\ArrayCollection;
 require_once ('models/noark5/v31/BasicRecord.php');
 require_once ('models/noark5/v31/Record.php');
@@ -11,8 +13,8 @@ require_once ('models/noark5/v31/SignOff.php');
 class RegistryEntry extends BasicRecord
 {
 
-    /** TODO: REMOVE @Id @Column(type="bigint", name="pk_record_id", nullable=false) @GeneratedValue **/
-    protected $id;
+//    /** TODO: REMOVE @Id @Column(type="bigint", name="pk_record_id", nullable=false) @GeneratedValue **/
+//    protected $id;
 
     /** M013 - journalaar (xs:integer) */
     /** @Column(type="integer", name = "record_year", nullable=true) **/
@@ -87,7 +89,7 @@ class RegistryEntry extends BasicRecord
     protected $referenceCorrespondencePart;
 
 
-    // Links to CorrespondenceParts
+    // Links to SignOff
     /** @ManyToMany(targetEntity="SignOff", fetch="EXTRA_LAZY")
      *   @JoinTable(name="record_sign_off",
      *        joinColumns=@JoinColumn(
@@ -99,10 +101,27 @@ class RegistryEntry extends BasicRecord
      * */
     protected $referenceSignOff;
 
+    /** @ManyToMany(targetEntity="Precedence", fetch="EXTRA_LAZY")
+     *   @JoinTable(name="case_file_precedence",
+     *        joinColumns=@JoinColumn(
+     *        name="f_pk_record_id",
+     *        referencedColumnName="pk_record_id"),
+     *    inverseJoinColumns=@JoinColumn(
+     *        name="f_pk_precedence",
+     *        referencedColumnName="pk_precedence"))
+     **/
+    protected $referencePrecedence;
+
+    // Links to Workflow
+    /** @OneToMany(targetEntity="Workflow", mappedBy="referenceRegistryEntry", cascade={"persist", "remove"}) **/
+    protected $referenceWorkflow;
+
     public function __construct()
     {
         $this->referenceCorrespondencePart = new ArrayCollection();
         $this->referenceSignOff = new ArrayCollection();
+        $this->referencePrecedence = new ArrayCollection();
+        $this->referenceWorkflow = new ArrayCollection();
     }
 
     public function getRecordYear()
@@ -308,6 +327,17 @@ class RegistryEntry extends BasicRecord
     public function addSignOff($signOff)
     {
         $this->referenceSignOff[] = $signOff;
+        return $this;
+    }
+
+    public function getReferencePrecedence()
+    {
+        return $this->referencePrecedence;
+    }
+
+    public function setReferencePrecedence($referencePrecedence)
+    {
+        $this->referencePrecedence = $referencePrecedence;
         return $this;
     }
 

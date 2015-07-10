@@ -2,17 +2,20 @@
 
 class Constants
 {
+  const TOOL_NAME = "KDRS-toolbox-validator-noark5";
   const TEST_XMLTEST = "XML Test";
   const TEST_XMLTEST_VALIDATION_WELLFORMED = "XML Test well-formed";
   const TEST_XMLTEST_VALIDATION_VALID = "XML Test valid";
   const TEST_NOARK5 = "Noark5";
   const TEST_CHECKSUM = "Checksum";
+  const TEST_CHECKSUM_ALL_DOCUMENTS = "Checksum of all documents";
   const TEST_DOCUMENT_DIRECTORY = "Document Directory";
-  const TEST_COUNT_MAPPE = "Mappe Count";
-  const TEST_COUNT_REGISTRERING = "Registrering Count";
-  const TEST_COUNT_DOCUMENTS = "Document Count";
+  const TEST_COUNT_MAPPE_ARKIVUTTREKK = "Mappe Count";
+  const TEST_COUNT_REGISTRERING_ARKIVUTTREKK = "Registrering Count";
+  const TEST_COUNT_DOCUMENTS_ARKIVUTTREKK = "Document Count";
   const TEST_COUNT_DOCUMENTS_ACTUAL = "Document Count in directory";
   const TEST_ARKIVUTTREKK_INFO_XML_CHECKSUM = "Check checksum in info.xml against arkivuttrekk.xml";
+  const TEST_FILE_EXISTS_AND_READABLE = "Check that the file exists and is readable";
   const STACK_ERROR = "XML Processing error in stack, misplaced object ";
 
   const TEST_STANDARD_NOARK5_TEST = "Standard Noark 5 test";
@@ -54,10 +57,16 @@ class Constants
   const EXCEPTION_ACCESS_FUNCTION_YOU_SHOULDNT = 'Access to function forbidden.';
   const EXCEPTION_UNKNOWN_NOARK5_OBJECT = 'Unknown Noark 5 Object ';
 
+  const LOG_CONSOLE = 'console';
+  const LOG_FILE = 'file';
+  const LOG_BOTH = 'both';
+
+  const REGISTRY_ENTRY_TYPE_INCOMING = "Inngående dokument";
   // Set to an arbitrary value of 10
   const FILE_PROCESSING_MAX_RECURSIVE_DEPTH = 10;
-  const TEST_TYPE_A1 = 'a1';
-  const TEST_TYPE_A2 = 'a2';
+  const TEST_TYPE_A0 = 'a0'; // Checks if all the files that we expect in the directory are present and readable
+  const TEST_TYPE_A1 = 'a1'; // Test correct-structured and wellformedness
+  const TEST_TYPE_A2 = 'a2'; // All checksums of documents in document folder are correct
   const TEST_TYPE_A3 = 'a3';
   const TEST_TYPE_A4 = 'a4';
   const TEST_TYPE_A5 = 'a5';
