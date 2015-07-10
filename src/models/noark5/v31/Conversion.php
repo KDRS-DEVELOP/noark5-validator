@@ -1,12 +1,11 @@
 <?php
 
-
 /**
  * @Entity @Table(name="conversion")
  **/
 class Conversion
 {
-    /** @Id @Column(type="bigint", name="pk_conversion", nullable=false) @GeneratedValue **/
+    /** @Id @Column(type="bigint", name="pk_conversion_id", nullable=false) @GeneratedValue **/
     protected $id;
 
     /** M615 - konvertertDato (xs:dateTime) */
@@ -40,7 +39,10 @@ class Conversion
      **/
     protected $referenceDocumentObject;
 
-    public function __construct(){}
+    public function __construct()
+    {
+
+    }
 
     public function getId()
     {
@@ -54,7 +56,7 @@ class Conversion
 
     public function setConvertedDate($convertedDate)
     {
-        $this->convertedDate = $convertedDate;
+        $this->convertedDate = DateTime::createFromFormat(Constants::XSD_DATETIME_FORMAT, $convertedDate);
         return $this;
     }
 
@@ -123,6 +125,12 @@ class Conversion
         $this->referenceDocumentObject = $referenceDocumentObject;
         return $this;
     }
+
+
+    public function __toString() {
+        return 'id[' . $this->id .'], convertedBy [' . $this->convertedBy. '], convertedFromFormat [ ' .   $this->convertedFromFormat . '] ';
+    }
+
 }
 
 ?>

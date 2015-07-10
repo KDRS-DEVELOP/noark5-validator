@@ -6,7 +6,7 @@
  **/
 class Deletion
 {
-    /** @Id @Column(type="bigint", name="pk_deletion", nullable=false) @GeneratedValue **/
+    /** @Id @Column(type="bigint", name="pk_deletion_id", nullable=false) @GeneratedValue **/
     protected $id;
 
     /** M089 - slettingstype (xs:string) */
@@ -65,7 +65,7 @@ class Deletion
 
     public function setDeletionDate($deletionDate)
     {
-        $this->deletionDate = $deletionDate;
+        $this->deletionDate = DateTime::createFromFormat(Constants::XSD_DATETIME_FORMAT, $deletionDate);
         return $this;
     }
 
@@ -91,7 +91,15 @@ class Deletion
         return $this;
     }
 
+    public function __toString() {
+        return ' [' . $this->id. '],' .
+        ' [' . $this->deletionType. '],' .
+        ' [' . $this->deletionBy. '],' .
+        ' [' . $this->deletionDate. '],' .
+        ' [' . $this->referenceSeries. '],' .
+        ' [' . $this->referenceDocumentDescription. '],';
 
+    }
 }
 
 ?>

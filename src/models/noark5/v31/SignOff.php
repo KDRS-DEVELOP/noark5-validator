@@ -12,7 +12,7 @@ class SignOff
     protected $id;
 
     /** M617 - avskrivningsdato */
-    /** @Column(type="datetime", name = "sign_off_date", nullable=true) **/
+    /** @Column(type="date", name = "sign_off_date", nullable=true) **/
     protected $signOffDate;
 
     /** M618 - avskrevetAv */
@@ -57,7 +57,7 @@ class SignOff
     public function setSignOffDate($signOffDate)
     {
         // have to convert from string object to datetime object
-        $this->signOffDate = DateTime::createFromFormat(Constants::XSD_DATETIME_FORMAT, $signOffDate);
+        $this->signOffDate = DateTime::createFromFormat(Constants::XSD_DATE_FORMAT, $signOffDate);
         return $this;
     }
 
@@ -112,8 +112,7 @@ class SignOff
     }
 
     public function __toString() {
-        return 'SignOff id[' . $this->id . '], signOffDate[' .  $this->signOffDate
-        . '], signOffBy[' .   $this->signOffBy . '], signOffMethod [' .   $this->signOffMethod . ']';
+        return 'SignOff id[' . $this->id . '], signOffBy[' .   $this->signOffBy . '], signOffMethod [' .   $this->signOffMethod . ']';
     }
 }
 

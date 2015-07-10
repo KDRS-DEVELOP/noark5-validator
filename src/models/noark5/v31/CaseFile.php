@@ -199,6 +199,16 @@ class CaseFile extends File
         return $this;
     }
 
+    public function addReferenceCaseParty($caseParty)
+    {
+        if ($this->referenceCaseParty->contains($caseParty)) {
+            return;
+        }
+        $this->referenceCaseParty[] = $caseParty;
+        $caseParty->addReferenceCaseFile($this);
+        return $this;
+    }
+
     public function getReferencePrecedence()
     {
         return $this->referencePrecedence;
@@ -207,6 +217,16 @@ class CaseFile extends File
     public function setReferencePrecedence($referencePrecedence)
     {
         $this->referencePrecedence = $referencePrecedence;
+        return $this;
+    }
+
+    public function addReferencePrecedence($precedence)
+    {
+        if ($this->referencePrecedence->contains($precedence)) {
+            return;
+        }
+        $this->referencePrecedence[] = $precedence;
+        $precedence->addReferenceCaseFile($this);
         return $this;
     }
 }

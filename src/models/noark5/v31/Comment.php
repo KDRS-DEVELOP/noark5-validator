@@ -1,6 +1,6 @@
 <?php
 
-
+use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @Entity @Table(name="comment")
  **/
@@ -27,26 +27,28 @@ class Comment
 
     // Link to File
     /**
-     * @ManyToOne
-     * @JoinColumn(targetEntity="File", name = "comment_file_id", referencedColumnName = "pk_file_id")
+     * @ManyToMany(targetEntity="File", mappedBy="referenceComment", cascade={"persist", "remove"})
      */
     protected $referenceFile;
 
     // Link to BasicRecord
     /**
-     * @ManyToOne
-     * @JoinColumn(targetEntity="BasicRecord", name = "comment_basic_record_id", referencedColumnName = "pk_record_id")
+     * @ManyToMany(targetEntity="BasicRecord", mappedBy="referenceComment")
      */
     protected  $referenceBasicRecord;
 
     // Link to DocumentDescription
     /**
-     * @ManyToOne
-     * @JoinColumn(targetEntity="DocumentDescription", name = "comment_document_description_id", referencedColumnName = "pk_document_description_id")
+     * @ManyToMany(targetEntity="DocumentDescription", mappedBy="referenceComment")
      */
     protected $referenceDocumentDescription;
 
-    public function __construct() {}
+    public function __construct()
+    {
+        $this->referenceFile = new ArrayCollection();
+        $this->referenceDocumentDescription = new ArrayCollection();
+        $this->referenceBasicRecord = new ArrayCollection();
+    }
 
     public function setId($id)
     {
@@ -83,7 +85,7 @@ class Comment
 
     public function setCommentDate($commentDate)
     {
-        $this->commentDate = $commentDate;
+        $this->commentDate = DateTime::createFromFormat(Constants::XSD_DATETIME_FORMAT, $commentDate);
         return $this;
     }
 
@@ -109,6 +111,15 @@ class Comment
         return $this;
     }
 
+    public function addReferenceFile($file)
+    {
+        if ($this->referenceFile->contains($file)) {
+            return;
+        }
+        $this->referenceFile [] = $file;
+        return $this;
+    }
+
     public function getReferenceBasicRecord()
     {
         return $this->referenceBasicRecord;
@@ -117,6 +128,14 @@ class Comment
     public function setReferenceBasicRecord($referenceBasicRecord)
     {
         $this->referenceBasicRecord = $referenceBasicRecord;
+        return $this;
+    }
+
+    public function addReferenceBasicRecord($basicRecord) {
+        if ($this->referenceBasicRecord->contains($basicRecord)) {
+            return;
+        }
+        $this->referenceBasicRecord[] = $basicRecord;
         return $this;
     }
 
@@ -129,6 +148,19 @@ class Comment
     {
         $this->referenceDocumentDescription = $referenceDocumentDescription;
         return $this;
+    }
+
+    public function addReferenceDocumentDescription($documentDescription)
+    {
+        if ($this->referenceDocumentDescription->contains($documentDescription)) {
+            return;
+        }
+        $this->referenceDocumentDescription[] = $documentDescription;
+        return $this;
+    }
+
+    public function __toString() {
+        return 'id[' . $this->id .'], commentText [' . $this->commentText. '] commentType [ ' .   $this->commentType . '] ';
     }
 
 }

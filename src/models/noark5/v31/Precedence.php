@@ -1,6 +1,6 @@
 <?php
 
-
+use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @Entity @Table(name="precedence")
  **/
@@ -14,7 +14,7 @@ class Precedence
     protected $precedenceDate;
 
     /** M600 - opprettetDato (xs:dateTime) */
-    /** @Column(type="dateTime", name="created_date", nullable=true) **/
+    /** @Column(type="datetime", name="created_date", nullable=true) **/
     protected $createdDate;
 
     /** M602 - opprettetAv (xs:string) */
@@ -65,7 +65,11 @@ class Precedence
     /** @ManyToMany(targetEntity="CaseFile", mappedBy="referencePrecedence") **/
     protected $referenceCaseFile;
 
-    public function __construct(){}
+    public function __construct()
+    {
+        $this->referenceRegistryEntry = new ArrayCollection();
+        $this->referenceCaseFile = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -79,7 +83,7 @@ class Precedence
 
     public function setPrecedenceDate($precedenceDate)
     {
-        $this->precedenceDate = $precedenceDate;
+        $this->precedenceDate = DateTime::createFromFormat(Constants::XSD_DATE_FORMAT, $precedenceDate);
         return $this;
     }
 
@@ -90,7 +94,7 @@ class Precedence
 
     public function setCreatedDate($createdDate)
     {
-        $this->createdDate = $createdDate;
+        $this->createdDate = DateTime::createFromFormat(Constants::XSD_DATETIME_FORMAT, $createdDate);
         return $this;
     }
 
@@ -156,7 +160,7 @@ class Precedence
 
     public function setPrecedenceApprovedDate($precedenceApprovedDate)
     {
-        $this->precedenceApprovedDate = $precedenceApprovedDate;
+        $this->precedenceApprovedDate = DateTime::createFromFormat(Constants::XSD_DATE_FORMAT, $precedenceApprovedDate);
         return $this;
     }
 
@@ -178,7 +182,7 @@ class Precedence
 
     public function setFinalisedDate($finalisedDate)
     {
-        $this->finalisedDate = $finalisedDate;
+        $this->finalisedDate = DateTime::createFromFormat(Constants::XSD_DATETIME_FORMAT, $finalisedDate);
         return $this;
     }
 
@@ -215,6 +219,15 @@ class Precedence
         return $this;
     }
 
+    public function addReferenceRegistryEntry($registryEntry)
+    {
+        if ($this->referenceRegistryEntry->contains($registryEntry)) {
+            return;
+        }
+        $this->referenceRegistryEntry[] = $registryEntry;
+        return $this;
+    }
+
     public function getReferenceCaseFile()
     {
         return $this->referenceCaseFile;
@@ -224,6 +237,32 @@ class Precedence
     {
         $this->referenceCaseFile = $referenceCaseFile;
         return $this;
+    }
+
+    public function addReferenceCaseFile($caseFile)
+    {
+        if ($this->referenceCaseFile->contains($caseFile)) {
+            return;
+        }
+        $this->referenceCaseFile[] = $caseFile;
+        return $this;
+    }
+
+    public function __toString() {
+        return
+        ' id[' . $this->id. '],' .
+        ' precedenceDate[' . ($this->precedenceDate == null ? null : $this->precedenceDate->format(Constants::XSD_DATE_FORMAT)) . '],' .
+        ' createdDate[' . ($this->createdDate == null ? null : $this->createdDate->format(Constants::XSD_DATETIME_FORMAT)) . '],' .
+        ' createdBy [' . $this->createdBy. '],' .
+        ' title[' . $this->title. '],' .
+        ' description[' . $this->description. '],' .
+        ' precedenceAuthority[' . $this->precedenceAuthority. '],' .
+        ' sourceOfLaw[' . $this->sourceOfLaw. '],' .
+        ' precedenceApprovedDate[' . ($this->precedenceApprovedDate == null ? null : $this->precedenceApprovedDate->format(Constants::XSD_DATETIME_FORMAT)) . '],' .
+        ' precedenceApprovedBy[' . $this->precedenceApprovedBy. '],' .
+        ' finalisedDate[' . ($this->finalisedDate == null ? null : $this->finalisedDate->format(Constants::XSD_DATE_FORMAT)) . '],' .
+        ' finalisedBy[' . $this->finalisedBy. '],' .
+        ' precedenceStatus[' . $this->precedenceStatus. ']';
     }
 }
 

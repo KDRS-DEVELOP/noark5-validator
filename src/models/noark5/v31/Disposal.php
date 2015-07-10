@@ -6,15 +6,15 @@
  **/
 class Disposal
 {
-    /** @Id @Column(type="bigint", name="pk_disposal", nullable=false) @GeneratedValue **/
+    /** @Id @Column(type="bigint", name="pk_disposal_id", nullable=false) @GeneratedValue **/
     protected $id;
 
     /** M450 - kassasjonsvedtak (xs:string) */
-    /** @Column(type="string", name = "disposal_ecision", nullable=true) **/
+    /** @Column(type="string", name = "disposal_decision", nullable=true) **/
     protected $disposalDecision;
 
     /** M453 - kassasjonshjemmel (xs:string) */
-    /** @Column(type="string", name = "disposal_uthority", nullable=true) **/
+    /** @Column(type="string", name = "disposal_authority", nullable=true) **/
     protected $disposalAuthority;
 
     /** M451 - bevaringstid (xs:integer) */
@@ -92,7 +92,7 @@ class Disposal
 
     public function setDisposalDate($disposalDate)
     {
-        $this->disposalDate = $disposalDate;
+        $this->disposalDate = DateTime::createFromFormat(Constants::XSD_DATE_FORMAT, $disposalDate);
         return $this;
     }
 
@@ -151,6 +151,16 @@ class Disposal
         return $this;
     }
 
+    public function __toString() {
+
+        return ' id[' . $this->id. '],' .
+        ' disposalDecision[' . $this->disposalDecision. '],' .
+        ' disposalAuthority[' . $this->disposalAuthority. '],' .
+        ' preservationTime[' . $this->preservationTime. '],' .
+        ' disposalDate[' . $this->disposalDate. '],' .
+        ' referenceSeries[' . $this->referenceSeries. ']';
+
+    }
 }
 
 ?>

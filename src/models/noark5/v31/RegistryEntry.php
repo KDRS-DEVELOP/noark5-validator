@@ -1,6 +1,5 @@
 <?php
 
-
 use Doctrine\Common\Collections\ArrayCollection;
 require_once ('models/noark5/v31/BasicRecord.php');
 require_once ('models/noark5/v31/Record.php');
@@ -12,9 +11,6 @@ require_once ('models/noark5/v31/SignOff.php');
  **/
 class RegistryEntry extends BasicRecord
 {
-
-//    /** TODO: REMOVE @Id @Column(type="bigint", name="pk_record_id", nullable=false) @GeneratedValue **/
-//    protected $id;
 
     /** M013 - journalaar (xs:integer) */
     /** @Column(type="integer", name = "record_year", nullable=true) **/
@@ -102,7 +98,7 @@ class RegistryEntry extends BasicRecord
     protected $referenceSignOff;
 
     /** @ManyToMany(targetEntity="Precedence", fetch="EXTRA_LAZY")
-     *   @JoinTable(name="case_file_precedence",
+     *   @JoinTable(name="registr_entry_precedence",
      *        joinColumns=@JoinColumn(
      *        name="f_pk_record_id",
      *        referencedColumnName="pk_record_id"),
@@ -310,6 +306,7 @@ class RegistryEntry extends BasicRecord
     public function addCorrespondencePart($correspondencePart)
     {
         $this->referenceCorrespondencePart[] = $correspondencePart;
+        $correspondencePart->addRecord($this);
         return $this;
     }
 
@@ -321,6 +318,7 @@ class RegistryEntry extends BasicRecord
     public function setReferenceSignOff($referenceSignOff)
     {
         $this->referenceSignOff = $referenceSignOff;
+        $referenceSignOff->addReferenceRecord($this);
         return $this;
     }
 
@@ -341,7 +339,15 @@ class RegistryEntry extends BasicRecord
         return $this;
     }
 
-
+    public function addReferencePrecedence($precedence)
+    {
+        if ($this->referencePrecedence->contains($precedence)) {
+            return;
+        }
+        $this->referencePrecedence[] = $precedence;
+        $precedence->addReferenceRegistryEntry($this);
+        return $this;
+    }
 }
 
 ?>

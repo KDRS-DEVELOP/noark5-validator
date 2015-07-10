@@ -23,11 +23,7 @@ class Keyword {
     protected $keyword;
 
     // Link to Class
-    /**
-     *   @ManyToOne(targetEntity="Klass", fetch="EXTRA_LAZY")
-     *       @JoinColumn(name="file_class_id",
-     *        referencedColumnName="pk_class_id")
-     **/
+    /** @ManyToMany(targetEntity="Klass", mappedBy="referenceKeyword") **/
     protected $referenceClass;
 
     // Links to File
@@ -42,6 +38,7 @@ class Keyword {
         $this->referenceBasicRecord = new ArrayCollection();
         $this->referenceFile = new ArrayCollection();
         $this->referenceClass = new ArrayCollection();
+        //$this->referenceClass = new ArrayCollection();
     }
 
     public function getId()
@@ -128,6 +125,10 @@ class Keyword {
         return $this;
     }
 
+    public function __toString()
+    {
+        return "id[" . $this->id . "], " . "systemId[" . $this->systemId . "] " . "keyword[" . $this->keyword . "] ";
+    }
 }
 
 ?>

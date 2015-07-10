@@ -6,7 +6,7 @@
  **/
 class Classified
 {
-    /** @Id @Column(type="bigint", name="pk_classified", nullable=false) @GeneratedValue **/
+    /** @Id @Column(type="bigint", name="pk_classified_id", nullable=false) @GeneratedValue **/
     protected $id;
 
     /** M506 - gradering (xs:string) */
@@ -14,7 +14,7 @@ class Classified
     protected $classification;
 
     /** M624 - graderingsdato (xs:dateTime) */
-    /** @Column(type="dateTime", name="classification_date", nullable=true) **/
+    /** @Column(type="datetime", name="classification_date", nullable=true) **/
     protected $classificationDate;
 
     /** M629 - gradertAv (xs:string) */
@@ -22,7 +22,7 @@ class Classified
     protected $classificationBy;
 
     /** M626 - nedgraderingsdato (xs:dateTime) */
-    /** @Column(type="dateTime", name="classification_downgraded_date", nullable=true) **/
+    /** @Column(type="datetime", name="classification_downgraded_date", nullable=true) **/
     protected $classificationDowngradedDate;
 
     /** M627 - nedgradertAv (xs:string) */
@@ -73,7 +73,8 @@ class Classified
 
     public function setClassificationDate($classificationDate)
     {
-        $this->classificationDate = $classificationDate;
+
+        $this->classificationDate = DateTime::createFromFormat(Constants::XSD_DATETIME_FORMAT, $classificationDate);
         return $this;
     }
 
@@ -95,7 +96,7 @@ class Classified
 
     public function setClassificationDowngradedDate($classificationDowngradedDate)
     {
-        $this->classificationDowngradedDate = $classificationDowngradedDate;
+        $this->classificationDowngradedDate = DateTime::createFromFormat(Constants::XSD_DATETIME_FORMAT, $classificationDowngradedDate);
         return $this;
     }
 
@@ -165,7 +166,15 @@ class Classified
         return $this;
     }
 
-
+    public function __toString() {
+        return
+        ' [' . $this->id. '],' .
+        ' [' . $this->classification. '],' .
+        ' [' . $this->classificationDate. '],' .
+        ' [' . $this->classificationBy. '],' .
+        ' [' . $this->classificationDowngradedDate. '],' .
+        ' [' . $this->classificationDowngradedBy. '],';
+    }
 }
 
 ?>

@@ -1,4 +1,5 @@
 <?php
+use Doctrine\Common\Collections\ArrayCollection;
 
 require_once ('models/noark5/v31/DocumentDescription.php');
 require_once ('models/noark5/v31/Record.php');
@@ -72,12 +73,14 @@ class DocumentObject
 	protected $referenceConversion;
 
 	/**
-	 * @OneToOne(targetEntity="ElectronicSignature", mappedBy="referenceBasicRecord")
+	 * @OneToOne(targetEntity="ElectronicSignature", mappedBy="referenceDocumentObject")
 	 **/
 	protected $referenceElectronicSignature;
 
     public function __construct()
-    {}
+    {
+        $this->referenceConversion =  new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -245,6 +248,15 @@ class DocumentObject
         return $this;
     }
 
+    public function addReferenceConversion($conversion) {
+        if ($this->referenceConversion->contains($conversion)) {
+            return;
+        }
+        $this->referenceConversion[] = $conversion;
+
+        return $this;
+    }
+
     public function getReferenceElectronicSignature()
     {
         return $this->referenceElectronicSignature;
@@ -255,6 +267,7 @@ class DocumentObject
         $this->referenceElectronicSignature = $referenceElectronicSignature;
         return $this;
     }
+
 
     public function __toString()
     {

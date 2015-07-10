@@ -7,9 +7,6 @@ require_once ('models/noark5/v31/BasicRecord.php');
  **/
 class MeetingRecord extends BasicRecord
 {
-    /** TODO: REMOVE @Id @Column(type="bigint", name="pk_record_id", nullable=false) @GeneratedValue **/
-    protected $id;
-
     /** M085 - moeteregistreringstype (xs:string) */
     /** @Column(type="string", name = "meeting_record_type", nullable=true) **/
     protected $meetingRecordType;
@@ -33,16 +30,14 @@ class MeetingRecord extends BasicRecord
     // Link to MeetingFile
     /** @ManyToOne(targetEntity="MeetingFile", fetch="EXTRA_LAZY")
      *   @JoinColumn(name="meeting_record_meeting_file_id",
-     *        referencedColumnName="pk_meeting_file_id")
+     *        referencedColumnName="pk_file_id")
      **/
     protected $referenceMeetingFile;
 
-    // Link to precursor MeetingRecord
-    /** @OneToOne(targetEntity="MeetingRecord", fetch="EXTRA_LAZY", mappedBy = "referenceFromMeetingRegistration") **/
+    /** M223 - referanseTilMoeteregistrering (xs:string) **/
     protected $referenceToMeetingRegistration;
 
-    // Link to successor MeetingRecord
-    /** @OneToOne(targetEntity="MeetingRecord", fetch="EXTRA_LAZY", mappedBy = "referenceToMeetingRegistration") **/
+    /** M224 - referanseFraMoeteregistrering (xs:string) **/
     protected $referenceFromMeetingRegistration;
 
     public function __construct()

@@ -181,6 +181,29 @@ class CaseParty
         return $this;
     }
 
+    public function addReferenceCaseParty($caseParty)
+    {
+        if ($this->referenceCaseParty->contains($caseParty)) {
+            return;
+        }
+        $this->referenceCaseParty = $caseParty;
+        return $this;
+    }
+
+    public function __toString() {
+        return
+            ' id[' . $this->id . '],' .
+            ' casePartyId[' . $this->casePartyId . '],' .
+            ' casePartyName[' . $this->casePartyName . '],' .
+            ' casePartyRole[' . $this->casePartyRole . '],' .
+            ' postalAddress[' . $this->postalAddress . '],' .
+            ' postCode[' . $this->postCode . '],' .
+            ' postalTown[' . $this->postalTown . '],' .
+            ' country[' . $this->country . '],' .
+            ' emailAddress[' . $this->emailAddress . '],' .
+            ' telephoneNumber[' . $this->telephoneNumber . '],' .
+            ' contactPerson[' . $this->contactPerson . '],';
+    }
 }
 
 ?>

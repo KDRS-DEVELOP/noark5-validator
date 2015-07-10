@@ -176,7 +176,6 @@ class ArkivstrukturParser
                         } elseif (strcmp($attributes['xsi:type'], 'moetemappe') == 0) {
                             $this->stack[] = new MeetingFile();
                             $classType = 'MeetingFile';
-                            $this->preProcessMeetingFile();
                         } else {
                             $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handle mappe xsi:type = ' . $attributes['xsi:type']);
                             throw new Exception(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handle mappe xsi:type = ' . $attributes['xsi:type']);
@@ -200,7 +199,6 @@ class ArkivstrukturParser
                         } elseif (strcmp($attributes['xsi:type'], 'moeteregistrering') == 0) {
                             $this->stack[] = new MeetingRecord();
                             $classType = 'MeetingRecord';
-                            $this->preProcessMeetingRecord();
                         } else {
                             $this->logger->error(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handle registrering xsi:type = ' . $attributes['xsi:type']);
                             throw new Exception(Constants::EXCEPTION_UNKNOWN_NOARK5_OBJECT . ' Cannot handle registrering xsi:type = ' . $attributes['xsi:type']);
@@ -252,7 +250,7 @@ class ArkivstrukturParser
                 if (get_class(end($this->stack)) !== "gradering") {
                     $this->graderingIsSimpleType = false;
                     $this->stack[] = new Classified();
-                    $this->preProcessClassfied();
+                    $this->preProcessClassified();
                 }
                 break;
             case 'kassasjon':
@@ -439,7 +437,7 @@ class ArkivstrukturParser
                 else {
 
                     $this->checkObjectClassTypeCorrect('Classified');
-                    $this->postProcessClassfication();
+                    $this->postProcessClassified();
                     $this->statistics->numberOfClassificationProcessed++;
                     array_pop($this->stack);
                 }
@@ -507,7 +505,7 @@ class ArkivstrukturParser
                 break;
            case 'konvertering':
                 $this->checkObjectClassTypeCorrect('Conversion');
-                $this->postProcessComment();
+                $this->postProcessConversion();
                 $this->statistics->numberOfConversionProcessed++;
                 array_pop($this->stack);
                 break;
@@ -692,7 +690,7 @@ class ArkivstrukturParser
                 $this->handleConversionTool();
                 break;
             case 'konverteringskommentar':
-                $this->handleConvertedDate();
+                $this->handleConversionComment();
                 break;
             case 'konvertertAv':
                 $this->handleConvertedBy();
@@ -816,6 +814,9 @@ class ArkivstrukturParser
                 break;
             case 'referanseDokumentfil':
                 $this->handleReferenceDocumentFile();
+                break;
+            case 'referanseFraMoeteregistrering':
+                $this->handleReferenceFromMeetingRecord();
                 break;
             case 'referanseForloeper':
                 $this->handleReferencePrecursor();
@@ -2574,63 +2575,56 @@ class ArkivstrukturParser
      * The following functions are provided to subclasses so that
      * they can be overridden.
      */
-    public function preProcessFonds() {}
-    public function preProcessFondsCreator() {}
-    public function preProcessSeries() {}
-    public function preProcessClassificationSystem() {}
+    public function preProcessCaseParty() {}
     public function preProcessClass() {}
-    public function preProcessFile() {}
+    public function preProcessClassificationSystem() {}
+    public function preProcessClassified() {}
     public function preProcessComment() {}
-    public function preProcessRecord() {}
-    public function preProcessElectronicSignature() {}
-    public function preProcessClassfication() {}
-    public function preProcessSignOff() {}
-    public function preProcessWorkflow() {}
     public function preProcessCorrespondencePart() {}
-    public function preProcessDocumentDescription() {}
-    public function preProcessDocumentObject() {}
+    public function preProcessConversion() {}
     public function preProcessCrossReference() {}
     public function preProcessDeletion() {}
     public function preProcessDisposal() {}
     public function preProcessDisposalUndertaken() {}
-    public function preProcessPrecedence() {}
-    public function preProcessCaseParty() {}
-    public function preProcessScreening() {}
-    public function preProcessConversion() {}
-    public function preProcessClassfied() {}
+    public function preProcessDocumentDescription() {}
+    public function preProcessDocumentObject() {}
     public function preProcessElectornicSignature() {}
-    public function preProcessMeetingFile() {}
-    public function preProcessMeetingRecord() {}
+    public function preProcessElectronicSignature() {}
+    public function preProcessFile() {}
+    public function preProcessFonds() {}
+    public function preProcessFondsCreator() {}
     public function preProcessMeetingParticipant() {}
+    public function preProcessPrecedence() {}
+    public function preProcessRecord() {}
+    public function preProcessScreening() {}
+    public function preProcessSeries() {}
+    public function preProcessSignOff() {}
+    public function preProcessWorkflow() {}
 
-    public function postProcessFonds() {}
-    public function postProcessFondsCreator() {}
-    public function postProcessSeries() {}
-    public function postProcessClassificationSystem() {}
+    public function postProcessCaseParty() {}
     public function postProcessClass() {}
-    public function postProcessFile() {}
+    public function postProcessClassificationSystem() {}
+    public function postProcessClassified() {}
     public function postProcessComment() {}
-    public function postProcessRecord() {}
-    public function postProcessPrecedence() {}
-    public function postProcessElectronicSignature() {}
-    public function postProcessClassfication() {}
-    public function postProcessSignOff() {}
-    public function postProcessWorkflow() {}
     public function postProcessCorrespondencePart() {}
+    public function postProcessConversion() {}
+    public function postProcessCrossReference() {}
     public function postProcessDocumentDescription() {}
     public function postProcessDocumentObject() {}
-    public function postProcessCrossReference() {}
     public function postProcessDeletion() {}
     public function postProcessDisposal() {}
     public function postProcessDisposalUndertaken() {}
-    public function postProcessCaseParty() {}
-    public function postProcessScreening() {}
-    public function postProcessConversion() {}
-    public function postProcessClassfied() {}
-    public function postProcessElectornicSignature() {}
-    public function postProcessMeetingFile() {}
-    public function postProcessMeetingRecord() {}
+    public function postProcessElectronicSignature() {}
+    public function postProcessFile() {}
+    public function postProcessFonds() {}
+    public function postProcessFondsCreator() {}
     public function postProcessMeetingParticipant() {}
+    public function postProcessPrecedence() {}
+    public function postProcessRecord() {}
+    public function postProcessSeries() {}
+    public function postProcessScreening() {}
+    public function postProcessSignOff() {}
+    public function postProcessWorkflow() {}
 
     /**
      *

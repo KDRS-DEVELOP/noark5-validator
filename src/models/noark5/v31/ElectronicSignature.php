@@ -28,19 +28,19 @@ class ElectronicSignature
 
     /**
      * @OneToOne(targetEntity="BasicRecord", inversedBy="referenceElectronicSignature")
-     * @JoinColumn(name="pk_electronic_signature_id", referencedColumnName="id")
+     * @JoinColumn(name="pk_electronic_signature_id", referencedColumnName="pk_record_id")
      **/
     protected $referenceBasicRecord;
 
     /**
      * @OneToOne(targetEntity="DocumentObject", inversedBy="referenceElectronicSignature")
-     * @JoinColumn(name="pk_electronic_signature_id", referencedColumnName="id")
+     * @JoinColumn(name="pk_electronic_signature_id", referencedColumnName="pk_document_object_id")
      **/
     protected $referenceDocumentObject;
 
     /**
      * @OneToOne(targetEntity="DocumentDescription", inversedBy="referenceElectronicSignature")
-     * @JoinColumn(name="pk_electronic_signature_id", referencedColumnName="id")
+     * @JoinColumn(name="pk_electronic_signature_id", referencedColumnName="pk_document_description_id")
      **/
     protected $referenceDocumentDescription;
 
@@ -80,7 +80,7 @@ class ElectronicSignature
 
     public function setVerifiedDate($verifiedDate)
     {
-        $this->verifiedDate = $verifiedDate;
+        $this->verifiedDate = DateTime::createFromFormat(Constants::XSD_DATETIME_FORMAT, $verifiedDate);
         return $this;
     }
 

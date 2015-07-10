@@ -6,7 +6,7 @@
  **/
 class Workflow
 {
-    /** @Id @Column(type="bigint", name="pk_workflow", nullable=false) @GeneratedValue **/
+    /** @Id @Column(type="bigint", name="pk_workflow_id", nullable=false) @GeneratedValue **/
     protected $id;
 
     /** M660 flytTil (xs:string) */
@@ -18,11 +18,11 @@ class Workflow
     protected $workflowFrom;
 
     /** M661 - flytMottattDato (xs:dateTime) */
-    /** @Column(type="dateTime", name="workflow_received_date", nullable=true) **/
+    /** @Column(type="datetime", name="workflow_received_date", nullable=true) **/
     protected $workflowReceivedDate;
 
     /** M662 flytSendtDato (xs:dateTime) */
-    /** @Column(type="dateTime", name="workflow_sent_date", nullable=true) **/
+    /** @Column(type="datetime", name="workflow_sent_date", nullable=true) **/
     protected $workflowSentDate;
 
     /** M663 flytStatus (xs:string) */
@@ -76,7 +76,7 @@ class Workflow
 
     public function setWorkflowReceivedDate($workflowReceivedDate)
     {
-        $this->workflowReceivedDate = $workflowReceivedDate;
+        $this->workflowReceivedDate = DateTime::createFromFormat(Constants::XSD_DATETIME_FORMAT, $workflowReceivedDate);
         return $this;
     }
 
@@ -87,7 +87,7 @@ class Workflow
 
     public function setWorkflowSentDate($workflowSentDate)
     {
-        $this->workflowSentDate = $workflowSentDate;
+        $this->workflowSentDate = DateTime::createFromFormat(Constants::XSD_DATETIME_FORMAT, $workflowSentDate);
         return $this;
     }
 
@@ -122,6 +122,17 @@ class Workflow
     {
         $this->referenceRegistryEntry = $referenceRegistryEntry;
         return $this;
+    }
+
+    public function __toString() {
+        return  ' id[' . $this->id. '],' .
+        ' workflowTo[' . $this->workflowTo. '],' .
+        ' workflowFrom[' . $this->workflowFrom. '],' .
+        ' workflowReceivedDate[' . $this->workflowReceivedDate. '],' .
+        ' workflowSentDate[' . $this->workflowSentDate. '],' .
+        ' workflowStatus[' . $this->workflowStatus. '],' .
+        ' workflowComment[' . $this->workflowComment. '],';
+
     }
 }
 

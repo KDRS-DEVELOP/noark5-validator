@@ -85,10 +85,16 @@ class Series
     protected $referenceSuccessor;
 
     // Link to ClassificationSystem
-    /** @ManyToOne (targetEntity="ClassificationSystem", fetch="EXTRA_LAZY")
-             @JoinColumn(name = "series_classification_system_id",
-                referencedColumnName = "pk_classification_system_id")
-    **/
+    /**
+     * @ManyToMany(targetEntity="ClassificationSystem", fetch="EXTRA_LAZY")
+     * @JoinTable(name="series_classfication_system",
+     * joinColumns=@JoinColumn(
+     * name="f_pk_series_id",
+     * referencedColumnName="pk_series_id"),
+     * inverseJoinColumns=@JoinColumn(
+     * name="f_pk_classification_system_id",
+     * referencedColumnName="pk_classification_system_id"))
+     */
     protected $referenceClassificationSystem;
 
     // Links to Files
@@ -127,11 +133,20 @@ class Series
      **/
     protected $referenceDeletion;
 
+    // Link to Screening
+    /** @ManyToOne(targetEntity="Screening", fetch="EXTRA_LAZY")
+     *   @JoinColumn(name="series_screening_id",
+     *        referencedColumnName="pk_screening_id")
+     **/
+    protected $referenceScreening;
+
     public function __construct()
     {
         $this->referenceStorageLocation = new ArrayCollection();
         $this->referenceFile = new ArrayCollection();
         $this->referenceRecord = new ArrayCollection();
+        //TODO: CHECK THIS $this->referenceClassified = new ArrayCollection();
+        $this->referenceClassificationSystem = new ArrayCollection();
     }
 
     public function getId()
@@ -325,6 +340,16 @@ class Series
         return $this;
     }
 
+    public function addReferenceClassificationSystem($classificationSystem)
+    {
+        if ($this->referenceClassificationSystem->contains($classificationSystem)) {
+            return;
+        }
+        $this->referenceClassificationSystem[]  = $classificationSystem;
+        $classificationSystem->addReferenceSeries($this);
+        return $this;
+    }
+
     public function getReferenceFile()
     {
         return $this->referenceFile;
@@ -396,6 +421,17 @@ class Series
     public function setReferenceDeletion($referenceDeletion)
     {
         $this->referenceDeletion = $referenceDeletion;
+        return $this;
+    }
+
+    public function getReferenceScreening()
+    {
+        return $this->referenceScreening;
+    }
+
+    public function setReferenceScreening($referenceScreening)
+    {
+        $this->referenceScreening = $referenceScreening;
         return $this;
     }
 

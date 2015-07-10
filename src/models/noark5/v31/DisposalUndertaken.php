@@ -6,7 +6,7 @@
  **/
 class DisposalUndertaken
 {
-    /** @Id @Column(type="bigint", name="pk_disposal_undertaken", nullable=false) @GeneratedValue **/
+    /** @Id @Column(type="bigint", name="pk_disposal_undertaken_id", nullable=false) @GeneratedValue **/
     protected $id;
 
     /** M631 - kassertAv (xs:string) */
@@ -50,7 +50,7 @@ class DisposalUndertaken
 
     public function setDisposalDate($disposalDate)
     {
-        $this->disposalDate = $disposalDate;
+        $this->disposalDate = DateTime::createFromFormat(Constants::XSD_DATETIME_FORMAT, $disposalDate);
         return $this;
     }
 
@@ -76,6 +76,13 @@ class DisposalUndertaken
         return $this;
     }
 
+    public function __toString() {
+        return  ' id[' . $this->id. '],' .
+                ' disposalBy[' . $this->disposalBy. '],' .
+                ' disposalDate[' . $this->disposalDate. '],' .
+                ' referenceSeries[' . $this->referenceSeries. '],' .
+                ' referenceDocumentDescription[' . $this->referenceDocumentDescription. ']';
+    }
 }
 
 ?>
