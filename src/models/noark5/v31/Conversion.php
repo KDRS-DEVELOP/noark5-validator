@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 
 /**
  * @Entity @Table(name="conversion")

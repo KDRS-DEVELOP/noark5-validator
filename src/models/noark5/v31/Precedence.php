@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 
 /**
  * @Entity @Table(name="precedence")
@@ -23,7 +23,7 @@ class Precedence
 
     /** M020 - tittel (xs:string) */
     /** @Column(type="string", name="title", nullable=true) **/
-    protected $tittle;
+    protected $title;
 
     /** M021 - beskrivelse (xs:string) */
     /** @Column(type="string", name="description", nullable=true) **/
@@ -105,14 +105,14 @@ class Precedence
         return $this;
     }
 
-    public function getTittle()
+    public function getTitle()
     {
-        return $this->tittle;
+        return $this->title;
     }
 
-    public function setTittle($tittle)
+    public function setTitle($title)
     {
-        $this->tittle = $tittle;
+        $this->title = $title;
         return $this;
     }
 

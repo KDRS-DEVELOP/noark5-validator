@@ -1,7 +1,7 @@
 <?php
 
 
-class System
+class SystemInfoXML
 {
     protected $systemType;
     protected $version;

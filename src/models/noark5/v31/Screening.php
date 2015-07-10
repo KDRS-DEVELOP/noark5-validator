@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 
 /** @Embeddable */
 class Screening
@@ -52,45 +52,45 @@ class Screening
         return $this;
     }
 
-    public function getscreeningMetadata()
+    public function getScreeningMetadata()
     {
         return $this->screeningMetadata;
     }
 
-    public function setscreeningMetadata($screeningMetadata)
+    public function setScreeningMetadata($screeningMetadata)
     {
         $this->screeningMetadata = $screeningMetadata;
         return $this;
     }
 
-    public function getscreeningDocument()
+    public function getScreeningDocument()
     {
         return $this->screeningDocument;
     }
 
-    public function setscreeningDocument($screeningDocument)
+    public function setScreeningDocument($screeningDocument)
     {
         $this->screeningDocument = $screeningDocument;
         return $this;
     }
 
-    public function getscreeningExpiresDate()
+    public function getScreeningExpiresDate()
     {
         return $this->screeningExpiresDate;
     }
 
-    public function setscreeningExpires($screeningExpiresDate)
+    public function setScreeningExpiresDate($screeningExpiresDate)
     {
         $this->screeningExpiresDate = $screeningExpiresDate;
         return $this;
     }
 
-    public function getscreeningDuration()
+    public function getScreeningDuration()
     {
         return $this->screeningDuration;
     }
 
-    public function setscreeningDuration($screeningDuration)
+    public function setScreeningDuration($screeningDuration)
     {
         $this->screeningDuration = $screeningDuration;
         return $this;

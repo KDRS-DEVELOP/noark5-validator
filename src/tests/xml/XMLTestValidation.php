@@ -1,4 +1,5 @@
 <?php
+
 require_once 'XMLTest.php';
 require_once 'utils/Constants.php';
 require_once 'testProperties/XMLValidationTestProperty.php';
@@ -45,7 +46,7 @@ class XMLTestValidation extends XMLTest {
 		$xml->setSchema(join(DIRECTORY_SEPARATOR, array($this->directory, $this->xsdFilename)));
 
 		$this->logger->trace(__METHOD__);
-		$this->logger->info('XML file to test validity is ' . $this->fileName . 'using XSD file ' . $this->xsdFilename);
+		$this->logger->info('  XML file to test validity is ' . $this->fileName . 'using XSD file ' . $this->xsdFilename);
 
 		// You have to parse the XML-file if you want it to be validated
 		$currentReadCount = 1;
@@ -66,16 +67,17 @@ class XMLTestValidation extends XMLTest {
 		if (count(libxml_get_errors()) == 0) {
 
 			$this->testProperty->addTestResult(true);
-			$this->logger->info('Validation of ['. $this->fileName . '] against [' . $this->xsdFilename . '] succeeded');
+			$this->logger->info(' RESULT Validation of ['. $this->fileName . '] against [' . $this->xsdFilename . '] succeeded');
 			$this->testProperty->addTestResultDescription('Validation of ['. $this->fileName . '] against [' . $this->xsdFilename . '] succeeded');
 			$this->testProperty->addTestResultReportDescription('Filen ' . $this->fileName . ' validerer mot filen' . $this->xsdFilename);
 		} else {
 
 			$this->testProperty->addTestResult(false);
-			$this->logger->error('Validation of ['. $this->fileName . '] against [' . $this->xsdFilename . '] failed' );
+			$this->logger->error(' RESULT Validation of ['. $this->fileName . '] against [' . $this->xsdFilename . '] failed' );
 			$this->testProperty->addTestResultDescription('Validation of ['. $this->fileName . '] against [' . $this->xsdFilename . '] failed' );
 			$this->testProperty->addTestResultReportDescription('Filen ' . $this->fileName . ' validerer ikke mot filen' . $this->xsdFilename);
 		}
+		libxml_clear_errors();
 	}
 }
 

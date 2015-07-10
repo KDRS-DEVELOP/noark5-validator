@@ -1,9 +1,9 @@
 <?php
-namespace handler;
-require_once 'models/noark5/v31/infoXML/ChecksumInfo.php';
-require_once 'models/noark5/v31/infoXML/ExtractionInfo.php';
-require_once 'models/noark5/v31/infoXML/FondsCreatorInfo.php';
-require_once 'models/noark5/v31/infoXML/System.php';
+
+require_once 'models/noark5/v31/infoXML/ChecksumInfoXML.php';
+require_once 'models/noark5/v31/infoXML/ExtractionInfoXML.php';
+require_once 'models/noark5/v31/infoXML/FondsCreatorInfoXML.php';
+require_once 'models/noark5/v31/infoXML/SystemInfoXML.php';
 
 class InfoFileDetails
 {
@@ -11,50 +11,45 @@ class InfoFileDetails
 
     /**
      *
-     * @var FondsCreatorInfo $fondsCreatorInfo:
-     */
-    protected $checksumInfo;
-
-    /**
-     *
-     * @var FondsCreatorInfo $fondsCreatorInfo:
+     * @var FondsCreatorInfoXML $fondsCreatorInfo:
      */
     protected $fondsCreatorInfo;
 
     /**
      *
-     * @var ExtractionInfo $extractionInfo:
+     * @var ExtractionInfoXML $extractionInfo:
      */
     protected $extractionInfo;
 
     /**
      *
-     * @var System $system:
+     * @var SystemInfoXML $systemInfo:
      */
-    protected $system;
+    protected $systemInfo;
 
     /**
      *
-     * @var ChecksumInfo $ChecksumInfo:
+     * @var ChecksumInfoXML $ChecksumInfo:
      */
     protected $checksumInfo;
 
     function __construct($infoFileFilename) {
         $this->infoFileFilename = $infoFileFilename;
-        $this->fondsCreatorInfo = new FondsCreatorInfo();
-        $this->checksumInfo = new ChecksumInfo();
-        $this->system = new System();
-        $checksumInfo = new ChecksumInfo();
+        $this->fondsCreatorInfo = new FondsCreatorInfoXML();
+        $this->checksumInfo = new ChecksumInfoXML();
+        $this->extractionInfo = new ExtractionInfoXML();
+        $this->systemInfo = new SystemInfoXML();
+        $this->checksumInfo = new ChecksumInfoXML();
     }
 
     public function getInfoFilename()
     {
-        return $this->infoFilename;
+        return $this->infoFileFilename;
     }
 
-    public function setInfoFilename($infoFilename)
+    public function setInfoFilename($infoFileFilename)
     {
-        $this->infoFilename = $infoFilename;
+        $this->infoFileFilename = $infoFileFilename;
         return $this;
     }
 
@@ -68,14 +63,14 @@ class InfoFileDetails
         return $this->fondsCreatorInfo;
     }
 
-    public function getExtraction()
+    public function getExtractionInfo()
     {
-        return $this->extraction;
+        return $this->extractionInfo;
     }
 
-    public function getSystem()
+    public function getSystemInfo()
     {
-        return $this->system;
+        return $this->systemInfo;
     }
 
     public function getChecksumInfo()

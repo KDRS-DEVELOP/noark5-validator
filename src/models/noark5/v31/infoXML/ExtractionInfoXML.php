@@ -1,7 +1,7 @@
 <?php
 
 
-class ExtractionInfo
+class ExtractionInfoXML
 {
     protected $date;
     protected $method;

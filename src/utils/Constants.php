@@ -16,6 +16,7 @@ class Constants
   const TEST_COUNT_DOCUMENTS_ACTUAL = "Document Count in directory";
   const TEST_ARKIVUTTREKK_INFO_XML_CHECKSUM = "Check checksum in info.xml against arkivuttrekk.xml";
   const TEST_FILE_EXISTS_AND_READABLE = "Check that the file exists and is readable";
+  const TEST_INCOMING_REGISTRYENTRY_SIGNEDOFF = 'Check that all incoming registry entry are signed off';
   const STACK_ERROR = "XML Processing error in stack, misplaced object ";
 
   const TEST_STANDARD_NOARK5_TEST = "Standard Noark 5 test";
@@ -74,7 +75,28 @@ class Constants
   const TEST_TYPE_A7 = 'a7';
   const TEST_TYPE_A8 = 'a8';
   const TEST_TYPE_A9 = 'a9';
+  const TEST_TYPE_A10 = 'a9';
+  const TEST_TYPE_C1 = 'c1';
+  const TEST_TYPE_C2 = 'c2';
+  const TEST_TYPE_C3 = 'c3';
+  const TEST_TYPE_C4 = 'c4';
+  const TEST_TYPE_C5 = 'c5';
+  const TEST_TYPE_C6 = 'c6';
+  const TEST_TYPE_C7 = 'c7';
+  const TEST_TYPE_C8 = 'c8';
+  const TEST_TYPE_C9 = 'c9';
+  const TEST_TYPE_C10 = 'c10';
+  const TEST_TYPE_C11 = 'c11';
+  const TEST_TYPE_C12 = 'c12';
+  const TEST_TYPE_C13 = 'c13';
+  const TEST_TYPE_C14 = 'c14';
+  const TEST_TYPE_C15 = 'c15';
+  const TEST_TYPE_C16 = 'c16';
+
 
 
   const XSDFILE = 'XSD';
+
+  const MAX_RECURSIVE_DEPTH = 10;
+  const NAME_DOCUMENT_DIRECTORY = 'dokumenter';
 }

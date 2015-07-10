@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 
 /**
  * @Entity @Table(name="workflow")
@@ -27,11 +27,11 @@ class Workflow
 
     /** M663 flytStatus (xs:string) */
     /** @Column(type="string", name="workflow_status", nullable=true) **/
-    protected $flytStatus;
+    protected $workflowStatus;
 
     /** M664 flytMerknad (xs:string) */
     /** @Column(type="string", name="workflow_comment", nullable=true) **/
-    protected $flytMerknad;
+    protected $workflowComment;
 
     // Link to RegistryEntry
     /** @ManyToOne(targetEntity="RegistryEntry", fetch="EXTRA_LAZY", cascade={"persist", "remove"})
@@ -91,25 +91,25 @@ class Workflow
         return $this;
     }
 
-    public function getFlytStatus()
+    public function getWorkflowStatus()
     {
-        return $this->flytStatus;
+        return $this->workflowStatus;
     }
 
-    public function setFlytStatus($flytStatus)
+    public function setWorkflowStatus($workflowStatus)
     {
-        $this->flytStatus = $flytStatus;
+        $this->workflowStatus = $workflowStatus;
         return $this;
     }
 
-    public function getFlytMerknad()
+    public function getWorkflowComment()
     {
-        return $this->flytMerknad;
+        return $this->workflowComment;
     }
 
-    public function setFlytMerknad($flytMerknad)
+    public function setWorkflowComment($workflowComment)
     {
-        $this->flytMerknad = $flytMerknad;
+        $this->workflowComment = $workflowComment;
         return $this;
     }
 

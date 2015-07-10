@@ -1,7 +1,7 @@
 <?php
 
 
-class ExtractionInfoArkivuttrekk
+class ArkivuttrekkExtractionInfo
 {
     protected $inngaaendeSkille;
     protected $utgaaendeSkille;

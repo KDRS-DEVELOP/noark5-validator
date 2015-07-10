@@ -1,6 +1,6 @@
 <?php
 
-class FondsCreatorInfo
+class FondsCreatorInfoXML
 {
     protected $extractionMyndighet;
     protected $contactPerson;

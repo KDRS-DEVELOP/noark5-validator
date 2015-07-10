@@ -1,5 +1,4 @@
 <?php
-namespace models\noark5\v31;
 
 class ArkivstrukturStatistics
 {
@@ -7,170 +6,181 @@ class ArkivstrukturStatistics
      *
      * @var int $numberOfFondsProcessed: The number of Fonds <arkiv> elements that are processed
      */
-    protected $numberOfFondsProcessed = 0;
+    public $numberOfFondsProcessed = 0;
 
     /**
      *
      * @var int $numberOfFondsCreatorProcessed: The number of FondsCreator <arkivskaper> elements that are processed
      */
-    protected $numberOfFondsCreatorProcessed = 0;
+    public $numberOfFondsCreatorProcessed = 0;
 
     /**
      *
      * @var int $numberOfSeriesProcessed: The number of Series, <arkivdel> elements that are processed
      */
-    protected $numberOfSeriesProcessed = 0;
+    public $numberOfSeriesProcessed = 0;
 
     /**
      *
      * @var int $numberOfClassificationSystemProcessed: The number of ClassificationSystem, <klassifikasjonssystem,> elements that are processed
      */
-    protected $numberOfClassificationSystemProcessed = 0;
+    public $numberOfClassificationSystemProcessed = 0;
 
     /**
      *
      * @var int $numberOfClassProcessed: The number of Class, <klasse> elements that are processed
      */
-    protected $numberOfClassProcessed = 0;
+    public $numberOfClassProcessed = 0;
 
     /**
      *
      * @var int $numberOfFileProcessed: The number of File, <mappe> elements that are processed
      */
-    protected $numberOfFileProcessed = 0;
+    public $numberOfFileProcessed = 0;
 
     /**
      *
      * @var int $numberOfCaseFileProcessed: The number of CaseFile, <saksmappe> elements that are processed
      */
-    protected $numberOfCaseFileProcessed = 0;
+    public $numberOfCaseFileProcessed = 0;
 
     /**
      *
      * @var int $numberOfMeetingFileProcessed: The number of MeetingFile, <moetemappe> elements that are processed
      */
-    protected $numberOfMeetingFileProcessed = 0;
+    public $numberOfMeetingFileProcessed = 0;
 
     /**
      *
      * @var int $numberOfRecordProcessed: The number of Record, <registrering> elements that are processed
      */
-    protected $numberOfRecordProcessed = 0;
+    public $numberOfRecordProcessed = 0;
 
     /**
      *
      * @var int $numberOfBasicRecordProcessed: The number of BasicRecord, <basisregistrering> elements that are processed
      */
-    protected $numberOfBasicRecordProcessed = 0;
+    public $numberOfBasicRecordProcessed = 0;
 
     /**
      *
      * @var int $numberOfRegistryEntryProcessed: The number of RegistryEntry, <journalpost> elements that are processed
      */
-    protected $numberOfRegistryEntryProcessed = 0;
+    public $numberOfRegistryEntryProcessed = 0;
 
     /**
      *
      * @var int $numberOfMeetingRecordProcessed: The number of MeetingRecord, <moeteregistrering> elements that are processed
      */
-    protected $numberOfMeetingRecordProcessed = 0;
+    public $numberOfMeetingRecordProcessed = 0;
 
     /**
      *
      * @var int $numberOfDocumentDescriptionProcessed: The number of DocumentDescription, <dokumentbeskrivelse> elements that are processed
      */
-    protected $numberOfDocumentDescriptionProcessed = 0;
+    public $numberOfDocumentDescriptionProcessed = 0;
 
     /**
      *
      * @var int $numberOfDocumentObjectProcessed: The number of DocumentObject, <documentobjekt> elements that are processed
      */
-    protected $numberOfDocumentObjectProcessed = 0;
+    public $numberOfDocumentObjectProcessed = 0;
 
     /**
      *
      * @var int $numberOfSignOffProcessed: The number of SignOff, <avskrivning> elements that are processed
      */
-    protected $numberOfSignOffProcessed = 0;
+    public $numberOfSignOffProcessed = 0;
 
     /**
      *
      * @var int $numberOfCorrespondancePartProcessed: The number of CorrespondancePart, <korrespondansepart> elements that are processed
      */
-    protected $numberOfCorrespondancePartProcessed = 0;
+    public $numberOfCorrespondancePartProcessed = 0;
 
     /**
      *
      * @var int $numberOfClassificationProcessed: The number of Classification, <gradering> elements that are processed
      */
-    protected $numberOfClassificationProcessed = 0;
+    public $numberOfClassificationProcessed = 0;
 
     /**
      *
      * @var int $numberOfDeletionProcessed: The number of Deletion, <sletting> elements that are processed
      */
-    protected $numberOfDeletionProcessed = 0;
+    public $numberOfDeletionProcessed = 0;
 
     /**
      *
      * @var int $numberOfDisposalProcessed: The number of Disposal, <kassasjon> elements that are processed
      */
-    protected $numberOfDisposalProcessed = 0;
+    public $numberOfDisposalProcessed = 0;
 
     /**
      *
      * @var int $numberOfDisposalUndertakenProcessed: The number of DisposalUndertaken, <utfoertKassasjon> elements that are processed
      */
-    protected $numberOfDisposalUndertakenProcessed = 0;
+    public $numberOfDisposalUndertakenProcessed = 0;
 
     /**
      *
      * @var int $numberOfPrecedenceProcessed: The number of Precedence, <presedens> elements that are processed
      */
-    protected $numberOfPrecedenceProcessed = 0;
+    public $numberOfPrecedenceProcessed = 0;
 
     /**
      *
      * @var int $numberOfCrossReferenceProcessed: The number of CrossReference, <kryssreferanse> elements that are processed
      */
-    protected $numberOfCrossReferenceProcessed = 0;
+    public $numberOfCrossReferenceProcessed = 0;
 
     /**
      *
      * @var int $numberOfElectronicSignatureProcessed: The number of ElectronicSignature, <elektroniskSignatur> elements that are processed
      */
-    protected $numberOfElectronicSignatureProcessed = 0;
+    public $numberOfElectronicSignatureProcessed = 0;
 
     /**
      *
      * @var int $numberOfScreeningProcessed: The number of Screening, <skjerming> elements that are processed
      */
-    protected $numberOfScreeningProcessed = 0;
+    public $numberOfScreeningProcessed = 0;
 
     /**
      *
      * @var int $numberOfCommentProcessed: The number of Comment, <merknad> elements that are processed
      */
-    protected $numberOfCommentProcessed = 0;
+    public $numberOfCommentProcessed = 0;
 
     /**
      *
      * @var int $numberOfConversionProcessed: The number of Conversion, <konvertering> elements that are processed
      */
-    protected $numberOfConversionProcessed = 0;
+    public $numberOfConversionProcessed = 0;
 
     /**
      *
      * @var int $numberOfCasePartyProcessed: The number of CaseParty, <sakspart> elements that are processed
      */
-    protected $numberOfCasePartyProcessed = 0;
+    public $numberOfCasePartyProcessed = 0;
 
     /**
      *
      * @var int $numberOfWorkflowProcessed: The number of Workflow, <dokumentflyt> elements that are processed
      */
-    protected $numberOfWorkflowProcessed = 0;
+    public $numberOfWorkflowProcessed = 0;
 
+    /**
+     *
+     * @var int $numberOfCorrespondencePartProcessed: The number of CorrespondencePart, <korrespondansepart> elements that are processed
+     */
+    public $numberOfCorrespondencePartProcessed = 0;
+
+    /**
+     *
+     * @var int $numberOfMeetingParticipantProcessed: The number of MeetingParticipant, <moetedeltager> elements that are processed
+     */
+    public $numberOfMeetingParticipantProcessed = 0;
     function __construct() {}
 
     public function getNumberOfFondsProcessed()

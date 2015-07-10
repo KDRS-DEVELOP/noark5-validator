@@ -41,17 +41,17 @@ class ChecksumTest extends Test {
         }
 
         if (file_exists($filename) && is_readable($filename)) {
-            $hashOfFile =  hash_file(strtolower(str_replace('-', '', $this->checksumAlgorithm)), $filename);
+            $hashOfFile = hash_file(strtolower(str_replace('-', '', $this->checksumAlgorithm)), $filename);
 
-            $this->logger->trace('Checksum algorithm specified is '. $this->checksumAlgorithm);
-            $this->logger->trace('The checksum value for the file ('. $this->fileName . ') is [' . $hashOfFile . ']');
+            $this->logger->trace('  Checksum algorithm specified is '. $this->checksumAlgorithm);
+            $this->logger->trace('  The checksum value for the file ('. $this->fileName . ') is [' . $hashOfFile . ']');
             $testResult = true;
             if (strcasecmp($this->checksumValue , $hashOfFile) == 0) {
-                $this->logger->info('The checksum for the file ('. $this->fileName . ') is correct');
-                $this->logger->trace('The checksum value for the file ('. $this->fileName . ') is [' . $hashOfFile . ']');
+                $this->logger->info('  The checksum for the file ('. $this->fileName . ') is correct');
+                $this->logger->trace('  The checksum value for the file ('. $this->fileName . ') is [' . $hashOfFile . ']');
             }
             else {
-                $this->logger->error('The file ('. $this->fileName . ') checksum is not correct. ' .
+                $this->logger->warn('  The file ('. $this->fileName . ') checksum is not correct. ' .
                                                                 'Original checksum is (' .
                                                                      $this->checksumValue .
                                                                         '). Computed checksum is ('
@@ -59,8 +59,9 @@ class ChecksumTest extends Test {
             }
         }
         else {
-            $this->logger->error('The File [' . $this->fileName . '] is not present and therefore the checksum test fails');
+            $this->logger->warn('  The File [' . $this->fileName . '] is not present and therefore the checksum test fails');
         }
+        $this->testProperty->setTestResult($testResult);
         return $testResult;
     }
 }

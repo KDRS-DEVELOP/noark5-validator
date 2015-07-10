@@ -1,6 +1,7 @@
 <?php
-require_once ('models/noark5/v31/ArkivUttrekkDetails.php');
-require_once ('models/noark5/v31/arkivuttrekkXML/ExtractionInfoArkivuttrekk.php');
+require_once ('models/noark5/v31/arkivuttrekkXML/ArkivUttrekkDetails.php');
+require_once ('models/noark5/v31/arkivuttrekkXML/ArkivuttrekkExtractionInfo.php');
+require_once ('models/noark5/v31/arkivuttrekkXML/ArkivUttrekkNoark5File.php');
 
 /*
  * I admit this is ugly code! The XML strucutre we have to deal with does not lend itself
@@ -17,9 +18,9 @@ class ArkivuttrekkHandler
 
     /**
      *
-     * @var ArkivUttrekk $arkivUttrekk : Object populated with the values from arkivuttrekk.xml
+     * @var ArkivUttrekkDetails $arkivUttrekkDetails : Object populated with the values from arkivuttrekk.xml
      */
-    protected $arkivUttrekk;
+    protected $arkivUttrekkDetails;
 
     /**
      *
@@ -30,7 +31,7 @@ class ArkivuttrekkHandler
     function __construct($arkivUttrekkFilename)
     {
         $this->arkivUttrekkFilename = $arkivUttrekkFilename;
-        $this->arkivUttrekk = new ArkivUttrekk();
+        $this->arkivUttrekkDetails = new ArkivUttrekkDetails();
     }
 
     public function processArkivuttrekk()
@@ -54,24 +55,25 @@ class ArkivuttrekkHandler
             foreach ($dataObject->attributes() as $dataObjectAttrib => $dataObjectAttribValue) {
                 // Looking for this : <dataObject name="arkivstruktur">
                 if (strcasecmp($dataObjectAttribValue, Constants::NAME_ARKIVSTRUKTUR) == 0) {
-                    $this->arkivUttrekk->setArkivstruktur($this->getFileDetails($dataObject, Constants::NAME_ARKIVSTRUKTUR));
-                }                 // Looking for this : <dataObject name="endringslogg">
-                else
-                    if (strcasecmp($dataObjectAttribValue, Constants::NAME_ENDRINGSLOGG) == 0) {
-                        $this->arkivUttrekk->setEndringslogg($this->getFileDetails($dataObject, Constants::NAME_ENDRINGSLOGG));
-                    }                     // Looking for this : <dataObject name="loependeJournal">
-                    else
-                        if (strcasecmp($dataObjectAttribValue, Constants::NAME_LOEPENDEJOURNAL) == 0) {
-                            $this->arkivUttrekk->setLoependeJournal($this->getFileDetails($dataObject, Constants::NAME_LOEPENDEJOURNAL));
-                        }                         // Looking for this : <dataObject name="offentligJournal">
-                        else
-                            if (strcasecmp($dataObjectAttribValue, Constants::NAME_OFFENTLIGJOURNAL) == 0) {
-                                $this->arkivUttrekk->setOffentligJournal($this->getFileDetails($dataObject, Constants::NAME_OFFENTLIGJOURNAL));
-                            }
+                    $this->arkivUttrekkDetails->setArkivstruktur($this->getFileDetails($dataObject, Constants::NAME_ARKIVSTRUKTUR));
+                }
+                // Looking for this : <dataObject name="endringslogg">
+                elseif (strcasecmp($dataObjectAttribValue, Constants::NAME_ENDRINGSLOGG) == 0) {
+                        $this->arkivUttrekkDetails->setEndringslogg($this->getFileDetails($dataObject, Constants::NAME_ENDRINGSLOGG));
+                }
+                // Looking for this : <dataObject name="loependeJournal">
+                elseif (strcasecmp($dataObjectAttribValue, Constants::NAME_LOEPENDEJOURNAL) == 0) {
+                            $this->arkivUttrekkDetails->setLoependeJournal($this->getFileDetails($dataObject, Constants::NAME_LOEPENDEJOURNAL));
+                }
+                // Looking for this : <dataObject name="offentligJournal">
+                elseif (strcasecmp($dataObjectAttribValue, Constants::NAME_OFFENTLIGJOURNAL) == 0) {
+                                $this->arkivUttrekkDetails->setOffentligJournal($this->getFileDetails($dataObject, Constants::NAME_OFFENTLIGJOURNAL));
+                }
             } // foreach ($dataObject->attributes() as $dataObjectAttrib => $dataObjectAttribValue)
         } // foreach ($startNode as $dataObject)
-    }
- // protected function processArkivutrekk () {
+    } // protected function processArkivutrekk () {
+
+
     protected function getFileDetails($dataObject, $noark5File)
     {
         $arkivUttrekkObject = new ArkivUttrekkNoark5File($noark5File);
@@ -182,7 +184,7 @@ class ArkivuttrekkHandler
          * <value>4</value>
          *
          */
-        $extractionInfo = new ExtractionInfoArkivuttrekk();
+        $extractionInfo = new ArkivuttrekkExtractionInfo();
 
         $attributeObject = $dataObject->attributes();
         if (isset($attributeObject['name']) == true)
@@ -251,7 +253,7 @@ class ArkivuttrekkHandler
             } // elseif (isset(
         } // foreach (
 
-        $this->arkivUttrekk->setExtractionInfo($extractionInfo);
+        $this->arkivUttrekkDetails->setExtractionInfo($extractionInfo);
     }
 
     public function getArkivUttrekkDetails()

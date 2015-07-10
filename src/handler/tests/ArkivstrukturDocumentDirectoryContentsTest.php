@@ -41,7 +41,6 @@ class ArkivstrukturDocumentChecksumTest extends ArkivstrukturParser
             $this->testResultsHandler->addResult($testProperty, Constants::TEST_TYPE_A2);
 
         }
-        print $testProperty . PHP_EOL;
         $checksumTest = null;
     }
 

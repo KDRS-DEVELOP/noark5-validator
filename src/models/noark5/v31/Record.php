@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 require_once ('models/noark5/v31/Series.php');
 require_once ('models/noark5/v31/File.php');
 require_once ('models/noark5/v31/Klass.php');

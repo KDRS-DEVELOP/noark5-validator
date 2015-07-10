@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 
 /**
  * @Entity @Table(name="comment")
@@ -19,7 +19,7 @@ class Comment
 
     /** M611 - merknadsdato (xs:dateTime)*/
     /** @Column(type="datetime", name="comment_time", nullable=true) **/
-    protected $commentTime;
+    protected $commentDate;
 
     /** M612 - merknadRegistrertAv (xs:string) */
     /** @Column(type="string", name="comment_registered_by", nullable=true) **/
@@ -76,14 +76,14 @@ class Comment
         return $this;
     }
 
-    public function getCommentTime()
+    public function getCommentDate()
     {
-        return $this->commentTime;
+        return $this->commentDate;
     }
 
-    public function setCommentTime($commentTime)
+    public function setCommentDate($commentDate)
     {
-        $this->commentTime = $commentTime;
+        $this->commentDate = $commentDate;
         return $this;
     }
 

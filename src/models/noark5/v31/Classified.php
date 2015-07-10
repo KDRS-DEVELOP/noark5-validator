@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 
 /**
  * @Entity @Table(name="classified")
@@ -10,24 +10,24 @@ class Classified
     protected $id;
 
     /** M506 - gradering (xs:string) */
-    /** @Column(type="string", name="classifcation", nullable=true) **/
-    protected $classifcation;
+    /** @Column(type="string", name="classification", nullable=true) **/
+    protected $classification;
 
     /** M624 - graderingsdato (xs:dateTime) */
-    /** @Column(type="dateTime", name="classifcation_date", nullable=true) **/
-    protected $classifcationDate;
+    /** @Column(type="dateTime", name="classification_date", nullable=true) **/
+    protected $classificationDate;
 
     /** M629 - gradertAv (xs:string) */
-    /** @Column(type="string", name = "classifcation_by", nullable=true) **/
-    protected $classifcationBy;
+    /** @Column(type="string", name = "classification_by", nullable=true) **/
+    protected $classificationBy;
 
     /** M626 - nedgraderingsdato (xs:dateTime) */
-    /** @Column(type="dateTime", name="classifcation_downgraded_date", nullable=true) **/
-    protected $classifcationDowngradedDate;
+    /** @Column(type="dateTime", name="classification_downgraded_date", nullable=true) **/
+    protected $classificationDowngradedDate;
 
     /** M627 - nedgradertAv (xs:string) */
-    /** @Column(type="string", name = "classifcation_downgraded_by", nullable=true) **/
-    protected $classifcationDowngradedBy;
+    /** @Column(type="string", name = "classification_downgraded_by", nullable=true) **/
+    protected $classificationDowngradedBy;
 
     // Links to Series
     /** @OneToMany(targetEntity="Series", mappedBy="referenceClassification", fetch="EXTRA_LAZY") **/
@@ -55,58 +55,58 @@ class Classified
         return $this->id;
     }
 
-    public function getClassifcation()
+    public function getClassification()
     {
-        return $this->classifcation;
+        return $this->classification;
     }
 
-    public function setClassifcation($classifcation)
+    public function setClassification($classification)
     {
-        $this->classifcation = $classifcation;
+        $this->classification = $classification;
         return $this;
     }
 
-    public function getClassifcationDate()
+    public function getClassificationDate()
     {
-        return $this->classifcationDate;
+        return $this->classificationDate;
     }
 
-    public function setClassifcationDate($classifcationDate)
+    public function setClassificationDate($classificationDate)
     {
-        $this->classifcationDate = $classifcationDate;
+        $this->classificationDate = $classificationDate;
         return $this;
     }
 
-    public function getClassifcationBy()
+    public function getClassificationBy()
     {
-        return $this->classifcationBy;
+        return $this->classificationBy;
     }
 
-    public function setClassifcationBy($classifcationBy)
+    public function setClassificationBy($classificationBy)
     {
-        $this->classifcationBy = $classifcationBy;
+        $this->classificationBy = $classificationBy;
         return $this;
     }
 
-    public function getClassifcationDowngradedDate()
+    public function getClassificationDowngradedDate()
     {
-        return $this->classifcationDowngradedDate;
+        return $this->classificationDowngradedDate;
     }
 
-    public function setClassifcationDowngradedDate($classifcationDowngradedDate)
+    public function setClassificationDowngradedDate($classificationDowngradedDate)
     {
-        $this->classifcationDowngradedDate = $classifcationDowngradedDate;
+        $this->classificationDowngradedDate = $classificationDowngradedDate;
         return $this;
     }
 
-    public function getClassifcationDowngradedBy()
+    public function getClassificationDowngradedBy()
     {
-        return $this->classifcationDowngradedBy;
+        return $this->classificationDowngradedBy;
     }
 
-    public function setClassifcationDowngradedBy($classifcationDowngradedBy)
+    public function setClassificationDowngradedBy($classificationDowngradedBy)
     {
-        $this->classifcationDowngradedBy = $classifcationDowngradedBy;
+        $this->classificationDowngradedBy = $classificationDowngradedBy;
         return $this;
     }
 

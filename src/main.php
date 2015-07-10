@@ -1,15 +1,14 @@
 <?php
 
-	require_once 'tests/noark5/v31/StandardTest.php';
-    require_once 'tests/xml/XMLTestValidation.php';
-	require_once 'tests/xml/XMLTestWellFormed.php';
-	require_once 'testProperties/XMLWellFormedTestProperty.php';
-	require_once 'handler/ArkivstrukturParser.php';
-	require_once 'handler/TestResultsHandler.php';
-	require_once 'handler/ArkivuttrekkHandler.php';
-	require_once 'handler/InfoFileHandler.php';
-	require_once 'reports/ReportBuilder.php';
-	require_once "vendor/autoload.php";
+require_once 'tests/noark5/v31/StandardTest.php';
+require_once 'tests/xml/XMLTestValidation.php';
+require_once 'tests/xml/XMLTestWellFormed.php';
+require_once 'handler/ArkivstrukturParser.php';
+require_once 'handler/TestResultsHandler.php';
+require_once 'handler/ArkivuttrekkHandler.php';
+require_once 'handler/InfoFileHandler.php';
+require_once 'reports/ReportBuilder.php';
+require_once "vendor/autoload.php";
 
 	// start
 	$options = getopt("d:t:v:i:l:s:");
@@ -44,6 +43,7 @@
 	    $GLOBALS['toolboxLogger'] = 'log2file';
 	}
 
+	$GLOBALS['tabSpaces'] = '\t';
 	/**
 	 * Contains a given structure with filenames that this extraction should conform to
 	 * and a list of files to validate
@@ -54,7 +54,7 @@
 	}
 
 	// TODO: Defo have commandline option to allow user to use own logfileconfig
-	Logger::configure('../resources/logging/logconfig.xml');
+	Logger::configure('resources/logging/logconfig.xml');
 	$logger = Logger::getLogger($GLOBALS['toolboxLogger']);
 
 	$defaultMemoryLimit = '1024M';
@@ -78,24 +78,27 @@
 	if (strcasecmp ($testType, Constants::TEST_TYPE_NOARK5) == 0 &&
 			strcasecmp ($testTypeVersion, Constants::TEST_TYPE_NOARK5_VERSION_31) == 0) {
 
-		    $this->logger->info('Before starting the amount of memory used is ' . memory_get_usage (false));
-		    $this->logger->info('Before starting the amount of real memory used is ' . memory_get_usage (true));
+		    $logger->trace('Before starting the amount of memory used is ' . memory_get_usage (false));
+		    $logger->trace('Before starting the amount of real memory used is ' . memory_get_usage (true));
 
 		    $testProperty = new TestProperty(Constants::TEST_STANDARD_NOARK5_TEST);
 		    $testProperty->setTestResult(true); // Assume test will be true until otherwise proven wrong
 		    $standardTest = new StandardTest(Constants::TEST_STANDARD_NOARK5_TEST, $directory,
-		                                      $testResultsHandler, $infoFile, $noark5StructureFile, $testProperty);
+		                                      $testResultsHandler, $infoFile, $noark5StructureFile,
+		                                      // null here is temporary, need a mechanism that allows
+		                                      // for specification of individual tests to run
+		                                      null, $testProperty);
 		    $standardTest->runTest();
 
 		    if ($testProperty->getTestResult() == true) {
-		      $this->logger->info('Standardtest completed without any errors');
+		      $logger->info('Standardtest completed without any errors');
 		    }
             else {
-                $this->logger->info('Standardtest completed with errors. ' . $testProperty->getDescription());
+                $logger->info('Standardtest completed with errors. ' . $testProperty->getDescription());
             }
 
-		    $this->logger->info('After standardTest, the amount of memory used is ' . memory_get_usage (false));
-		    $this->logger->info('After standardTest, the amount of real memory used is ' . memory_get_usage (true));
+		    $logger->trace('After standardTest, the amount of memory used is ' . memory_get_usage (false));
+		    $logger->trace('After standardTest, the amount of real memory used is ' . memory_get_usage (true));
 	}
 
 	$reportBuilder = new ReportBuilder($testResultsHandler);

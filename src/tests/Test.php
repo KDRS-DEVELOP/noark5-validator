@@ -4,7 +4,6 @@ class Test {
 
 	protected $testProperty;
 	protected $testName;
-
 	/**
 	 *
 	 * @var $logger: The Log4Php logger object
@@ -14,7 +13,7 @@ class Test {
 	function __construct($testName, $testProperty) {
 		$this->$testName = $testName;
 		$this->testProperty = $testProperty;
-		$logger = Logger::getLogger($GLOBALS['toolboxLogger']);
+		$this->logger = Logger::getLogger( $GLOBALS['toolboxLogger']);
 	}
 
 	public function runTest () {

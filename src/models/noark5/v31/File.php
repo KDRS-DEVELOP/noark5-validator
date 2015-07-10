@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 use Doctrine\Common\Collections\ArrayCollection;
 require_once ('models/noark5/v31/Series.php');
 require_once ('models/noark5/v31/Klass.php');
@@ -65,7 +65,7 @@ class File
     *            inverseJoinColumns={@JoinColumn(name="f_pk_keyword_id", referencedColumnName="pk_keyword_id")}
     *      )
     **/
-    protected $keyword;
+    protected $referenceKeyword;
 
     // Link to StorageLocation
     /**
@@ -127,6 +127,11 @@ class File
     public function __construct() {
         $this->referenceChildFile = new ArrayCollection();
         $this->referenceRecord = new ArrayCollection();
+        $this->referenceCrossReference = new ArrayCollection();
+        $this->referenceClassified = new ArrayCollection();
+        $this->referenceDisposal = new ArrayCollection();
+        $this->referenceClass = new ArrayCollection();
+        $this->referenceSeries = new ArrayCollection();
     }
 
     public function getId() {
@@ -251,20 +256,15 @@ class File
         return $this;
     }
 
-    public function getKeyword()
-    {
-        return $this->keyword;
-    }
-
-    public function setKeyword($keyword)
-    {
-        $this->keyword = $keyword;
-        return $this;
-    }
-
     public function getReferenceKeyword()
     {
         return $this->referenceKeyword;
+    }
+
+    public function addKeyword($keyword)
+    {
+        $this->referenceKeyword[] = $keyword;
+        return $this;
     }
 
     public function setReferenceKeyword($referenceKeyword)

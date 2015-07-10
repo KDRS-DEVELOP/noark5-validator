@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 require_once ('models/noark5/v31/File.php');
 
 /**
@@ -24,13 +24,21 @@ class MeetingFile extends File
     /** @Column(type="string", name="meeting_place", nullable=true) **/
     protected $meetingPlace;
 
-    // Link to precursor MeetingRecord
-    /** @OneToOne(targetEntity="MeetingRecord", fetch="EXTRA_LAZY", mappedBy = "referanceFromMeetingRegistration") **/
+    // Link to next MeetingFile
+    /** @OneToOne(targetEntity="MeetingFile", fetch="EXTRA_LAZY", mappedBy = "referencePreviousMeeting") **/
     protected $referenceNextMeeting;
 
-    // Link to successor MeetingRecord
-    /** @OneToOne(targetEntity="MeetingRecord", fetch="EXTRA_LAZY", mappedBy = "referanceToMeetingRegistration") **/
+    // Link to previous MeetingFile
+    /** @OneToOne(targetEntity="MeetingFile", fetch="EXTRA_LAZY", mappedBy = "referenceNextMeeting") **/
     protected $referencePreviousMeeting;
+
+    // Link to MeetingRecord
+    /** @OneToMany(targetEntity="MeetingParticipant", mappedBy="referenceMeetingFile", fetch="EXTRA_LAZY") **/
+    protected $referenceMeetingRecord;
+
+    // Links to MeetingParticipant
+    /** @OneToMany(targetEntity="MeetingParticipant", mappedBy="referenceMeetingFile", fetch="EXTRA_LAZY") **/
+    protected $referenceMeetingParticipant;
 
     public function __construct()
     {

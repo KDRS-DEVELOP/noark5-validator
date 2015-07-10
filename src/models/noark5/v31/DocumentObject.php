@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 require_once ('models/noark5/v31/DocumentDescription.php');
 require_once ('models/noark5/v31/Record.php');
 

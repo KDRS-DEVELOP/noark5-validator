@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 /**
  * @Entity @Table(name="case_party")
  **/
@@ -7,6 +7,10 @@ class CaseParty
 {
     /** @Id @Column(type="bigint", name="pk_case_party_id", nullable=false) @GeneratedValue **/
     protected $id;
+
+    /** M010 - sakspartID (xs:string) */
+    /** @Column(type="string",name = "case_party_id", nullable=true) **/
+    protected $casePartyId;
 
     /** M302 - sakspartNavn (xs:string) */
     /** @Column(type="string",name = "case_party_name", nullable=true) **/
@@ -54,6 +58,17 @@ class CaseParty
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getCasePartyId()
+    {
+        return $this->casePartyId;
+    }
+
+    public function setCasePartyId($casePartyId)
+    {
+        $this->casePartyId = $casePartyId;
+        return $this;
     }
 
     public function getCasePartyName()

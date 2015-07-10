@@ -1,14 +1,14 @@
 <?php
-namespace models\noark5\v31;
 
 class ArkivUttrekkNoark5File
 {
-
     protected $filename;
     protected $format;
     protected $checksumAlgorithm;
     protected $checksumValue;
     protected $schemas;
+
+    // The following two are only applicable for arkivstruktur.xml
     protected $numberRegistrering;
     protected $numberMappe;
 

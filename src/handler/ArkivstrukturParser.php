@@ -1,20 +1,37 @@
 <?php
+require_once ('models/noark5/v31/BasicRecord.php');
+require_once ('models/noark5/v31/CaseFile.php');
+require_once ('models/noark5/v31/CaseParty.php');
+require_once ('models/noark5/v31/Classified.php');
+require_once ('models/noark5/v31/ClassificationSystem.php');
+require_once ('models/noark5/v31/Comment.php');
+require_once ('models/noark5/v31/Conversion.php');
+require_once ('models/noark5/v31/CorrespondencePart.php');
+require_once ('models/noark5/v31/CrossReference.php');
+require_once ('models/noark5/v31/Deletion.php');
+require_once ('models/noark5/v31/Disposal.php');
+require_once ('models/noark5/v31/DisposalUndertaken.php');
+require_once ('models/noark5/v31/DocumentObject.php');
+require_once ('models/noark5/v31/DocumentDescription.php');
+require_once ('models/noark5/v31/ElectronicSignature.php');
+require_once ('models/noark5/v31/File.php');
 require_once ('models/noark5/v31/Fonds.php');
 require_once ('models/noark5/v31/FondsCreator.php');
-require_once ('models/noark5/v31/Series.php');
-require_once ('models/noark5/v31/File.php');
-require_once ('models/noark5/v31/CaseFile.php');
-require_once ('models/noark5/v31/Record.php');
-require_once ('models/noark5/v31/BasicRecord.php');
-require_once ('models/noark5/v31/RegistryEntry.php');
-require_once ('models/noark5/v31/MeetingRecord.php');
+require_once ('models/noark5/v31/Keyword.php');
+require_once ('models/noark5/v31/Klass.php');
 require_once ('models/noark5/v31/MeetingFile.php');
-require_once ('models/noark5/v31/CorrespondencePart.php');
-require_once ('models/noark5/v31/DocumentDescription.php');
-require_once ('models/noark5/v31/DocumentObject.php');
+require_once ('models/noark5/v31/MeetingParticipant.php');
+require_once ('models/noark5/v31/MeetingRecord.php');
+require_once ('models/noark5/v31/Precedence.php');
+require_once ('models/noark5/v31/Record.php');
+require_once ('models/noark5/v31/RegistryEntry.php');
+require_once ('models/noark5/v31/Screening.php');
+require_once ('models/noark5/v31/Series.php');
 require_once ('models/noark5/v31/SignOff.php');
+require_once ('models/noark5/v31/Workflow.php');
 require_once ('tests/file/ChecksumTest.php');
 require_once ('vendor/apache/log4php/src/main/php/Logger.php');
+require_once ('models/noark5/v31/ArkivstrukturStatistics.php');
 
 /*
  * This is a pretty straight forward implementation of callback methods
@@ -74,17 +91,32 @@ class ArkivstrukturParser
                                              or not the current <gradering> is the simpleType.
      */
     protected $graderingIsSimpleType = false;
+
     /**
      *
-     * @var $logger: The Log4Php logger object
+     * @var Logger $logger: The Log4Php logger object
      */
     protected $logger;
+
+    /**
+     *
+     * @var boolean $errorsEncountered: Whether or not errors were encountered. Not used locally,
+     *                                  but intended for subclasses
+     */
+    protected $errorsEncountered = false;
+
+    /**
+     *
+     * @var int $numberErrorsEncountered: The number of errors that were encountered. Not used locally,
+     *                                    but intended for subclasses
+     */
+    protected $numberErrorsEncountered = 0;
+
 
     function __construct()
     {
         $this->stack = array();
         $this->currentCdata = "";
-        $this->onlyParse = $onlyParse;
         $this->statistics = new ArkivstrukturStatistics();
         $this->logger = Logger::getLogger($GLOBALS['toolboxLogger']);
         $this->logger->trace('Constructing an instance of ' . get_class($this));
@@ -195,10 +227,6 @@ class ArkivstrukturParser
                 $this->stack[] = new Precedence();
                 $this->preProcessPrecedence();
                 break;
-            case 'elektroniskSignatur':
-                $this->stack[] = new ElectronicSignature();
-                $this->preProcessElectronicSignature();
-                break;
             case 'dokumentbeskrivelse':
                 $this->stack[] = new DocumentDescription();
                 $this->preProcessDocumentDescription();
@@ -208,7 +236,7 @@ class ArkivstrukturParser
                 $this->preProcessDocumentObject();
                 break;
             case 'elektroniskSignatur':
-                $this->stack[] = new ElectornicSignature();
+                $this->stack[] = new ElectronicSignature();
                 $this->preProcessElectornicSignature();
                 break;
             case 'gradering':
@@ -222,7 +250,7 @@ class ArkivstrukturParser
                  * the endElement will be processed accordingly.
                  */
                 if (get_class(end($this->stack)) !== "gradering") {
-                    $this->graderingIsSimpleType = true;
+                    $this->graderingIsSimpleType = false;
                     $this->stack[] = new Classified();
                     $this->preProcessClassfied();
                 }
@@ -263,7 +291,10 @@ class ArkivstrukturParser
                 $this->stack[] = new CaseParty();
                 $this->preProcessCaseParty();
                 break;
-
+            case 'moetedeltaker':
+                $this->stack[]  = new MeetingParticipant();
+                $this->preProcessMeetingParticipant();
+                break;
         }
     }
 
@@ -300,13 +331,13 @@ class ArkivstrukturParser
             case 'arkiv':
                 $this->checkObjectClassTypeCorrect('Fonds');
                 $this->postProcessFonds();
-                $this->numberOfFondsProcessed++;
+                $this->statistics->numberOfFondsProcessed++;
                 array_pop($this->stack);
                 break;
             case 'arkivdel':
                 $this->checkObjectClassTypeCorrect('Series');
                 $this->postProcessSeries();
-                $this->numberOfSeriesProcessed++;
+                $this->statistics->numberOfSeriesProcessed++;
                 array_pop($this->stack);
                 break;
             case 'mappe':
@@ -314,13 +345,13 @@ class ArkivstrukturParser
 
                 if (strcasecmp($classType, 'CaseFile') == 0) {
                     $this->checkObjectClassTypeCorrect('CaseFile');
-                    $this->numberOfFileProcessed++;
+                    $this->statistics->numberOfFileProcessed++;
                 } elseif (strcasecmp($classType, 'File') == 0) {
                     $this->checkObjectClassTypeCorrect('File');
-                    $this->numberOfCaseFileProcessed++;
+                    $this->statistics->numberOfCaseFileProcessed++;
                 } elseif (strcasecmp($classType, 'MeetingFile') == 0) {
                     $this->checkObjectClassTypeCorrect('MeetingFile');
-                    $this->numberOfMeetingFileProcessed++;
+                    $this->statistics->numberOfMeetingFileProcessed++;
                 } else {
                     $this->logger->error('Unable to process a specific mappe type. Type identified as (' . $classType . ')');
                     throw new Exception('Unable to process a specific mappe type. Type identified as (' . $classType . ')');
@@ -333,16 +364,16 @@ class ArkivstrukturParser
 
                 if (strcasecmp($classType, 'Record') == 0) {
                     $this->checkObjectClassTypeCorrect('Record');
-                    $this->numberOfRecordProcessed++;
+                    $this->statistics->numberOfRecordProcessed++;
                 } elseif (strcasecmp($classType, 'BasicRecord') == 0) {
                     $this->checkObjectClassTypeCorrect('BasicRecord');
-                    $this->numberOfBasicRecordProcessed++;
+                    $this->statistics->numberOfBasicRecordProcessed++;
                 } elseif (strcasecmp($classType, 'RegistryEntry') == 0) {
                     $this->checkObjectClassTypeCorrect('RegistryEntry');
-                    $this->numberOfRegistryEntryProcessed++;
+                    $this->statistics->numberOfRegistryEntryProcessed++;
                 } elseif (strcasecmp($classType, 'MeetingRecord') == 0) {
                     $this->checkObjectClassTypeCorrect('MeetingRecord');
-                    $this->numberOfMeetingRecordProcessed++;
+                    $this->statistics->numberOfMeetingRecordProcessed++;
                 } else {
                     $this->logger->error('Unable to process a specific registrering type. Type identified as (' . $classType . ')');
                     throw new Exception('Unable to process a specific registrering type. Type identified as (' . $classType . ')');
@@ -352,38 +383,38 @@ class ArkivstrukturParser
                 break;
             case 'korrespondansepart':
                 $this->checkObjectClassTypeCorrect('CorrespondencePart');
-                $this->numberOfCorrespondencePartProcessed++;
+                $this->statistics->numberOfCorrespondencePartProcessed++;
                 $this->postProcessCorrespondencePart();
                 array_pop($this->stack);
                 break;
             case 'avskrivning':
                 $this->checkObjectClassTypeCorrect('SignOff');
                 $this->postProcessSignOff();
-                $this->numberOfSignOffProcessed++;
+                $this->statistics->numberOfSignOffProcessed++;
                 array_pop($this->stack);
                 break;
             case 'presedens':
                 $this->checkObjectClassTypeCorrect('Precedence');
                 $this->postProcessPrecedence();
-                $this->numberOfPrecedenceProcessed++;
+                $this->statistics->numberOfPrecedenceProcessed++;
                 array_pop($this->stack);
                 break;
             case 'dokumentbeskrivelse':
                 $this->checkObjectClassTypeCorrect('DocumentDescription');
                 $this->postProcessDocumentDescription();
-                $this->numberOfDocumentDescriptionProcessed++;
+                $this->statistics->numberOfDocumentDescriptionProcessed++;
                 array_pop($this->stack);
                 break;
             case 'dokumentobjekt':
                 $this->checkObjectClassTypeCorrect('DocumentObject');
-                $this->numberOfDocumentObjectProcessed++;
+                $this->statistics->numberOfDocumentObjectProcessed++;
                 $this->postProcessDocumentObject();
                 array_pop($this->stack);
                 break;
             case 'arkivskaper':
                 $this->checkObjectClassTypeCorrect('FondsCreator');
                 $this->postProcessFondsCreator();
-                $this->numberOfFondsCreatorProcessed++;
+                $this->statistics->numberOfFondsCreatorProcessed++;
                 array_pop($this->stack);
                 break;
             case 'gradering':
@@ -407,9 +438,9 @@ class ArkivstrukturParser
                 }
                 else {
 
-                    $this->checkObjectClassTypeCorrect('Gradering');
+                    $this->checkObjectClassTypeCorrect('Classified');
                     $this->postProcessClassfication();
-                    $this->numberOfClassificationProcessed++;
+                    $this->statistics->numberOfClassificationProcessed++;
                     array_pop($this->stack);
                 }
                 break;
@@ -417,75 +448,82 @@ class ArkivstrukturParser
             case 'klasse':
                 $this->checkObjectClassTypeCorrect('Klass');
                 $this->postProcessClass();
-                $this->numberOfClassProcessed++;
+                $this->statistics->numberOfClassProcessed++;
                 array_pop($this->stack);
                 break;
             case 'klassifikasjonssystem':
                 $this->checkObjectClassTypeCorrect('ClassificationSystem');
                 $this->postProcessClassificationSystem();
-                $this->numberOfClassificationSystemProcessed++;
+                $this->statistics->numberOfClassificationSystemProcessed++;
                 array_pop($this->stack);
                 break;
             case 'kryssreferanse':
                 $this->checkObjectClassTypeCorrect('CrossReference');
                 $this->postProcessCrossReference();
-                $this->numberOfCrossReferenceProcessed++;
+                $this->statistics->numberOfCrossReferenceProcessed++;
                 array_pop($this->stack);
                 break;
             case 'sletting':
                 $this->checkObjectClassTypeCorrect('Deletion');
                 $this->postProcessDeletion();
-                $this->numberOfDeletionProcessed++;
+                $this->statistics->numberOfDeletionProcessed++;
                 array_pop($this->stack);
                 break;
             case 'kassasjon':
                 $this->checkObjectClassTypeCorrect('Disposal');
                 $this->postProcessDisposal();
-                $this->numberOfDisposalProcessed++;
+                $this->statistics->numberOfDisposalProcessed++;
                 array_pop($this->stack);
                 break;
             case 'utfoertKassasjon':
                 $this->checkObjectClassTypeCorrect('DisposalUndertaken');
                 $this->postProcessDisposal();
-                $this->numberOfDisposalUndertakenProcessed++;
+                $this->statistics->numberOfDisposalUndertakenProcessed++;
                 array_pop($this->stack);
                 break;
             case 'sakspart':
-                $this->checkObjectClassTypeCorrect('DisposalUndertaken');
+                $this->checkObjectClassTypeCorrect('CaseParty');
                 $this->postProcessDisposal();
-                $this->numberOfCasePartyProcessed++;
+                $this->statistics->numberOfCasePartyProcessed++;
                 array_pop($this->stack);
                 break;
             case 'elektroniskSignatur':
-                $this->checkObjectClassTypeCorrect('DisposalUndertaken');
+                $this->checkObjectClassTypeCorrect('ElectronicSignature');
                 $this->postProcessDisposal();
-                $this->numberOfElectronicSignatureProcessed++;
+                $this->statistics->numberOfElectronicSignatureProcessed++;
                 array_pop($this->stack);
                 break;
             case 'skjerming':
                 $this->checkObjectClassTypeCorrect('Screening');
                 $this->postProcessScreening();
-                $this->numberOfScreeningProcessed++;
+                $this->statistics->numberOfScreeningProcessed++;
                 array_pop($this->stack);
                 break;
             case 'merknad':
                 $this->checkObjectClassTypeCorrect('Comment');
                 $this->postProcessComment();
-                $this->numberOfCommentProcessed++;
+                $this->statistics->numberOfCommentProcessed++;
                 array_pop($this->stack);
                 break;
            case 'konvertering':
                 $this->checkObjectClassTypeCorrect('Conversion');
                 $this->postProcessComment();
-                $this->numberOfConversionProcessed++;
+                $this->statistics->numberOfConversionProcessed++;
                 array_pop($this->stack);
                 break;
             case 'dokumentflyt':
                 $this->checkObjectClassTypeCorrect('Workflow');
                 $this->postProcessWorkflow();
-                $this->numberOfWorkflowProcessed++;
+                $this->statistics->numberOfWorkflowProcessed++;
                 array_pop($this->stack);
                 break;
+            case 'moetedeltaker':
+                $this->checkObjectClassTypeCorrect('MeetingParticipant');
+                $this->postProcessMeetingParticipant();
+                $this->statistics->numberOfMeetingParticipantProcessed++;
+                array_pop($this->stack);
+                break;
+
             // The rest of the elements are elements that simpleTypes and
             // within one of the complexTypes above
             case 'administrativEnhet':
@@ -556,6 +594,9 @@ class ArkivstrukturParser
                 break;
             case 'elektroniskSignaturSikkerhetsnivaa':
                 $this->handleElectronicSignatureSecurityLevel();
+                break;
+            case 'elektroniskSignaturVerifisert':
+                $this->handleElectronicSignatureVerified();
                 break;
             case 'epostadresse':
                 $this->handleEmailAddress();
@@ -651,7 +692,7 @@ class ArkivstrukturParser
                 $this->handleConversionTool();
                 break;
             case 'konverteringskommentar':
-                $this->handleConversionDate();
+                $this->handleConvertedDate();
                 break;
             case 'konvertertAv':
                 $this->handleConvertedBy();
@@ -752,7 +793,7 @@ class ArkivstrukturParser
             case 'presedensDato':
                 $this->handlePrecedenceDate();
                 break;
-            case 'presedensstatus':
+            case 'presedensStatus':
                 $this->handlePrecedenceStatus();
                 break;
             case 'presedensHjemmel':
@@ -852,10 +893,13 @@ class ArkivstrukturParser
                 $this->handleScreeningMetadata();
                 break;
             case 'skjermingOpphoererDato':
-                $this->handleScreeningCeasesDate();
+                $this->handleScreeningExpiresDate();
                 break;
             case 'skjermingsvarighet':
                 $this->handleScreeningDuration();
+                break;
+            case 'slettetAv':
+                $this->handleDeletionBy();
                 break;
             case 'slettetDato':
                 $this->handleDeletionDate();
@@ -905,9 +949,8 @@ class ArkivstrukturParser
             case 'verifisertDato':
                 $this->handleVerifiedDate();
                 break;
-
             default:
-                $this->logger->error('Unknown Noark 5 tag ' . $tag . '. This has not been handled. This is a serious error');
+                $this->logger->fatal('Unknown Noark 5 tag ' . $tag . '. This has not been handled. This is a serious error');
         }
 
         $this->currentCdata = "";
@@ -934,7 +977,7 @@ class ArkivstrukturParser
     protected function checkObjectClassTypeCorrect($className)
     {
         if (strcmp($className, get_class(end($this->stack))) != 0) {
-            $this->logger->error('Error processing arkivstruktur.xml. Unsafe to continue Expected (' . $className . ') found (' . get_class(end($this->stack)) . '). Unsafe processing.');
+            $this->logger->fatal('Error processing arkivstruktur.xml. Unsafe to continue Expected (' . $className . ') found (' . get_class(end($this->stack)) . '). Unsafe processing.');
             throw new Exception('Error processing arkivstruktur.xml. Unsafe to continue Expected (' . $className . ') found (' . get_class(end($this->stack)) . '). Unsafe processing.');
         }
         return true;
@@ -1490,7 +1533,7 @@ class ArkivstrukturParser
     protected function handleDisposalUndertakenBy()
     {
         $object = end($this->stack);
-        $object->setDisposalUndertakenBy($this->currentCdata);
+        $object->setDisposalBy($this->currentCdata);
     }
 
     /**
@@ -2007,7 +2050,7 @@ class ArkivstrukturParser
     protected function handleRecordNumber()
     {
         $object = end($this->stack);
-        $object->setRecordNumber($this->currentCdata);
+        $object->setRegistryEntryNumber($this->currentCdata);
     }
 
     /**
@@ -2194,7 +2237,7 @@ class ArkivstrukturParser
     protected function handleReferenceFromMeetingRecord()
     {
         $object = end($this->stack);
-        $object->setReferenceFromMeetingRecord($this->currentCdata);
+        $object->setReferenceFromMeetingRegistration($this->currentCdata);
     }
 
     /**
@@ -2205,7 +2248,7 @@ class ArkivstrukturParser
     protected function handleReferenceToMeetingRecord()
     {
         $object = end($this->stack);
-        $object->seteferenceToMeetingRecord($this->currentCdata);
+        $object->setReferenceToMeetingRegistration($this->currentCdata);
     }
 
     /**
@@ -2231,14 +2274,14 @@ class ArkivstrukturParser
     }
 
     /**
-     * function handleScreeningCeasesDate()
+     * function handleScreeningExpiresDate()
      * Can be used by: skjerming
      * n5mdk: M505 skjermingOpphoererDato
      */
-    protected function handleScreeningCeasesDate()
+    protected function handleScreeningExpiresDate()
     {
         $object = end($this->stack);
-        $object->setScreeningCeasesDate($this->currentCdata);
+        $object->setScreeningExpiresDate($this->currentCdata);
     }
 
     /**
@@ -2539,7 +2582,6 @@ class ArkivstrukturParser
     public function preProcessFile() {}
     public function preProcessComment() {}
     public function preProcessRecord() {}
-    public function preProcessPrecedence() {}
     public function preProcessElectronicSignature() {}
     public function preProcessClassfication() {}
     public function preProcessSignOff() {}
@@ -2551,10 +2593,15 @@ class ArkivstrukturParser
     public function preProcessDeletion() {}
     public function preProcessDisposal() {}
     public function preProcessDisposalUndertaken() {}
-    public function postProcessPrecedence() {}
+    public function preProcessPrecedence() {}
     public function preProcessCaseParty() {}
     public function preProcessScreening() {}
     public function preProcessConversion() {}
+    public function preProcessClassfied() {}
+    public function preProcessElectornicSignature() {}
+    public function preProcessMeetingFile() {}
+    public function preProcessMeetingRecord() {}
+    public function preProcessMeetingParticipant() {}
 
     public function postProcessFonds() {}
     public function postProcessFondsCreator() {}
@@ -2564,7 +2611,7 @@ class ArkivstrukturParser
     public function postProcessFile() {}
     public function postProcessComment() {}
     public function postProcessRecord() {}
-    public function postProcesspostcedence() {}
+    public function postProcessPrecedence() {}
     public function postProcessElectronicSignature() {}
     public function postProcessClassfication() {}
     public function postProcessSignOff() {}
@@ -2576,10 +2623,14 @@ class ArkivstrukturParser
     public function postProcessDeletion() {}
     public function postProcessDisposal() {}
     public function postProcessDisposalUndertaken() {}
-    public function postProcesspostcedence() {}
     public function postProcessCaseParty() {}
     public function postProcessScreening() {}
     public function postProcessConversion() {}
+    public function postProcessClassfied() {}
+    public function postProcessElectornicSignature() {}
+    public function postProcessMeetingFile() {}
+    public function postProcessMeetingRecord() {}
+    public function postProcessMeetingParticipant() {}
 
     /**
      *
@@ -2856,6 +2907,15 @@ class ArkivstrukturParser
         return $this->statistics;
     }
 
+    public function getErrorsEncountered()
+    {
+        return $this->errorsEncountered;
+    }
+
+    public function getNumberErrorsEncountered()
+    {
+        return $this->numberErrorsEncountered;
+    }
 }
 
 ?>

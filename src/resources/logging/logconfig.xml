@@ -8,7 +8,7 @@
 
     <appender name="validatorAppenderConsole" class="LoggerAppenderConsole">
         <layout class="LoggerLayoutSimple" />
- 		<param name="file" value="kdrs-toolbox-validator-noark5.log" />
+ 
     </appender>
 
     <logger name="log2fileAndConsole">

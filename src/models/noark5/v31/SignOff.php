@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 use Doctrine\Common\Collections\ArrayCollection;
 require_once ('models/noark5/v31/RegistryEntry.php');
 
@@ -111,6 +111,10 @@ class SignOff
         return $this;
     }
 
+    public function __toString() {
+        return 'SignOff id[' . $this->id . '], signOffDate[' .  $this->signOffDate
+        . '], signOffBy[' .   $this->signOffBy . '], signOffMethod [' .   $this->signOffMethod . ']';
+    }
 }
 
 ?>

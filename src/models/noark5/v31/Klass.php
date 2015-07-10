@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 /**
  * @Entity @Table(name="class")
  **/
@@ -204,7 +204,7 @@ class Klass
         return $this->referenceKeyword;
     }
 
-    public function setReferenceKeyword($referenceKeyword)
+    public function addKeyword($referenceKeyword)
     {
         $this->referenceKeyword = $referenceKeyword;
         return $this;

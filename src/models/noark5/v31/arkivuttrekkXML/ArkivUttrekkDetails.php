@@ -1,18 +1,39 @@
 <?php
-namespace models\noark5\v31;
-require_once 'models/noark5/v31/ArkivUttrekkFile.php';
-
 
 class ArkivUttrekkDetails
 {
+    /**
+     *
+     * @var ArkivUttrekkNoark5File $arkivstruktur: Particular information about the file arkivstruktur.xml
+     */
     protected $arkivstruktur;
+
+    /**
+     *
+     * @var ArkivUttrekkNoark5File $offentligJournal: Particular information about the file offentligJournal.xml
+     */
     protected $offentligJournal;
+
+
+    /**
+     *
+     * @var ArkivUttrekkNoark5File $loependeJournal: Particular information about the file loependeJournal.xml
+     */
     protected $loependeJournal;
+
+    /**
+     *
+     * @var ArkivUttrekkNoark5File $endringslogg: Particular information about the file endringslogg.xml
+     */
     protected $endringslogg;
+
+     /**
+     *
+     * @var ArkivuttrekkExtractionInfo $extractionInfo: The top level information in arkivuttrekk.xml
+     */
     protected $extractionInfo;
 
-    function __construct() {
-    }
+    function __construct() {}
 
     public function getArkivstruktur()
     {

@@ -1,4 +1,5 @@
 <?php
+
 require_once 'XMLTest.php';
 require_once 'utils/Constants.php';
 
@@ -19,13 +20,13 @@ class XMLTestWellFormed extends XMLTest {
         $testResult = true;
 
 	    $this->logger->trace('Entering ' . __METHOD__);
-	    $this->logger->info('Testing all XML/XSD files for well-formedness');
+	    $this->logger->info('  Testing the file [' . $this->fileName . '] for well-formedness');
 
 		$xmlParser = xml_parser_create();
 
 		$file = join(DIRECTORY_SEPARATOR, array($this->directory, $this->fileName));
 		if (!($fp = fopen($file, "r"))) {
-		    $this->logger->error('Could not open XML-file  for input [' . $file . ']');
+		    $this->logger->error('  Could not open XML-file for input [' . $file . ']');
 		    throw new Exception ('Could not open XML input : ' . $file);
 		}
 
@@ -42,14 +43,14 @@ class XMLTestWellFormed extends XMLTest {
 		xml_parser_free($xmlParser);
 		if ($testResult == true) {
 			$this->testProperty->addTestResult(true);
-		    $this->logger->info('The file ' . $this->fileName . ' is well-formed.');
+		    $this->logger->info(' RESULT The file ' . $this->fileName . ' is well-formed.');
 			$this->testProperty->addTestResultDescription('The file ' . $this->fileName . ' is well-formed.');
 			$this->testProperty->addTestResultReportDescription('Filen ' . $this->fileName . ' er korrektstrukturert.');
 		}
 		else {
 			$this->testProperty->addTestResult(false);
 			$this->testProperty->addTestResultDescription('The file ' . $this->fileName . ' is not well-formed.');
-			$this->logger->error('The file ' . $this->fileName . ' is not well-formed.');
+			$this->logger->error(' RESULT The file ' . $this->fileName . ' is not well-formed.');
 			$this->testProperty->addTestResultReportDescription('Filen ' . $this->fileName . ' er ikke korrektstrukturert.');
 		}
 	}

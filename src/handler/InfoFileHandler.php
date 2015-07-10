@@ -1,7 +1,5 @@
 <?php
-
-
-
+require_once ('handler/InfoFileDetails.php');
 
 class InfoFileHandler
 {
@@ -9,8 +7,7 @@ class InfoFileHandler
     protected $infoFileDetails;
 
     function __construct($infoFilename) {
-        $this->infoFileDetails = new InfoFileDetails();
-        $this->infoFileDetails->setInfoFilename($infoFilename);
+        $this->infoFileDetails = new InfoFileDetails($infoFilename);
     }
 
     public function processInfofile() {
@@ -48,7 +45,7 @@ class InfoFileHandler
             $this->extractionInfo->setSystemProducerInfo(null);
 
 
-        $this->systemInfo = $this->infoFileDetails->getSystem();
+        $this->systemInfo = $this->infoFileDetails->getSystemInfo();
         $attributeObject = $arkivUttrekk->system->attributes();
         if (isset($attributeObject['systemType']) == true)
             $this->systemInfo->setSystemType($attributeObject['systemType']);

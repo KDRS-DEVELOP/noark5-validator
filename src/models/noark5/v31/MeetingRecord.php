@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 require_once ('models/noark5/v31/BasicRecord.php');
 
 /**
@@ -15,7 +15,7 @@ class MeetingRecord extends BasicRecord
     protected $meetingRecordType;
 
     /** M088 - moetesakstype (xs:string) */
-    /** @Column(type="string", name = "meeting_ase_type", nullable=true) **/
+    /** @Column(type="string", name = "meeting_case_type", nullable=true) **/
     protected $meetingCaseType;
 
     /** M305 - administrativEnhet (xs:string) */
@@ -29,6 +29,13 @@ class MeetingRecord extends BasicRecord
     /** M307 - saksbehandler */
     /** @Column(type="string", name = "case_handler", nullable=true) **/
     protected $caseHandler;
+
+    // Link to MeetingFile
+    /** @ManyToOne(targetEntity="MeetingFile", fetch="EXTRA_LAZY")
+     *   @JoinColumn(name="meeting_record_meeting_file_id",
+     *        referencedColumnName="pk_meeting_file_id")
+     **/
+    protected $referenceMeetingFile;
 
     // Link to precursor MeetingRecord
     /** @OneToOne(targetEntity="MeetingRecord", fetch="EXTRA_LAZY", mappedBy = "referenceFromMeetingRegistration") **/
@@ -111,6 +118,17 @@ class MeetingRecord extends BasicRecord
     public function setreferenceToMeetingRegistration($referenceToMeetingRegistration)
     {
         $this->referenceToMeetingRegistration = $referenceToMeetingRegistration;
+        return $this;
+    }
+
+    public function getReferenceMeetingFile()
+    {
+        return $this->referenceMeetingFile;
+    }
+
+    public function setReferenceMeetingFile($referenceMeetingFile)
+    {
+        $this->referenceMeetingFile = $referenceMeetingFile;
         return $this;
     }
 

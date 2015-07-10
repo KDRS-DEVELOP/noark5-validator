@@ -1,5 +1,5 @@
 <?php
-namespace models\noark5\v31;
+
 use Doctrine\Common\Collections\ArrayCollection;
 require_once ('models/noark5/v31/DocumentObject.php');
 require_once ('models/noark5/v31/Author.php');

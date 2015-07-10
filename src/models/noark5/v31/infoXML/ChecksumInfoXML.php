@@ -1,7 +1,7 @@
 <?php
 
 
-class ChecksumInfo
+class ChecksumInfoXML
 {
     protected $filename;
     protected $checksumValue;
