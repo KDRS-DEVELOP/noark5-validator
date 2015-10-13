@@ -247,7 +247,11 @@ class ArkivstrukturParser
                  * $this->graderingIsSimpleType is set to true so that we know
                  * the endElement will be processed accordingly.
                  */
-                if (get_class(end($this->stack)) !== "gradering") {
+
+                if (get_class(end($this->stack)) === "Classified") {
+                    $this->graderingIsSimpleType = true;
+                }
+                else {
                     $this->graderingIsSimpleType = false;
                     $this->stack[] = new Classified();
                     $this->preProcessClassified();
@@ -435,7 +439,6 @@ class ArkivstrukturParser
                     $this->graderingIsSimpleType = false;
                 }
                 else {
-
                     $this->checkObjectClassTypeCorrect('Classified');
                     $this->postProcessClassified();
                     $this->statistics->numberOfClassificationProcessed++;

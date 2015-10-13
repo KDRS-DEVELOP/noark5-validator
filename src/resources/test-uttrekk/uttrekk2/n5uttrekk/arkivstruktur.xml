@@ -32,7 +32,7 @@
 		<opprettetAv>Arkivleder</opprettetAv>
 		<avsluttetDato>2013-09-09T12:00:00</avsluttetDato>
 		<avsluttetAv>Arkivleder</avsluttetAv>
-		<!--<kassasjon>
+		<kassasjon>
 			<kassasjonsvedtak>Vurderes senere</kassasjonsvedtak>
 			<kassasjonshjemmel>Riksarkivarens bevarings- og kassasjons lov</kassasjonshjemmel>
 			<bevaringstid>10</bevaringstid>
@@ -62,7 +62,6 @@
 			<nedgraderingsdato>2023-09-09T12:00:00</nedgraderingsdato>
 			<nedgradertAv>PST</nedgradertAv>
 		</gradering>
-		 -->
 		<klassifikasjonssystem>
 			<systemID>7f45c136-9abc-750a-8394-21a13e6bf1c9</systemID>
 			<klassifikasjonstype></klassifikasjonstype>

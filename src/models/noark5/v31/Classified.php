@@ -1,5 +1,5 @@
 <?php
-
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @Entity @Table(name="classified")
@@ -49,6 +49,16 @@ class Classified
     /** @OneToMany(targetEntity="DocumentDescription", mappedBy="referenceClassification", fetch="EXTRA_LAZY") **/
 
     protected $referenceDocumentDescription;
+
+
+    public function __construct()
+    {
+        $this->referenceDocumentDescription = new ArrayCollection();
+        $this->referenceRecord = new ArrayCollection();
+        $this->referenceFile = new ArrayCollection();
+        $this->referenceKlass = new ArrayCollection();
+        $this->referenceSeries = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -122,6 +132,15 @@ class Classified
         return $this;
     }
 
+    public function addReferenceSeries($series)
+    {
+        if ($this->referenceSeries->contains($series)) {
+            return;
+        }
+        $this->referenceSeries[] = $series;
+        return $this;
+    }
+
     public function getReferenceKlass()
     {
         return $this->referenceKlass;
@@ -130,6 +149,15 @@ class Classified
     public function setReferenceKlass($referenceKlass)
     {
         $this->referenceKlass = $referenceKlass;
+        return $this;
+    }
+
+    public function addReferenceKlass($klass)
+    {
+        if ($this->referenceKlass->contains($klass)) {
+            return;
+        }
+        $this->referenceKlass[] = $klass;
         return $this;
     }
 
@@ -144,6 +172,15 @@ class Classified
         return $this;
     }
 
+    public function addReferenceFile($file)
+    {
+        if ($this->referenceFile->contains($file)) {
+            return;
+        }
+        $this->referenceFile[] = $file;
+        return $this;
+    }
+
     public function getReferenceRecord()
     {
         return $this->referenceRecord;
@@ -154,6 +191,16 @@ class Classified
         $this->referenceRecord = $referenceRecord;
         return $this;
     }
+
+    public function addReferenceRecord($record)
+    {
+        if ($this->referenceRecord->contains($record)) {
+            return;
+        }
+        $this->referenceRecord[] = $record;
+        return $this;
+    }
+
 
     public function getReferenceDocumentDescription()
     {
@@ -166,13 +213,23 @@ class Classified
         return $this;
     }
 
+    public function addReferenceDocumentDescription($documentDescription)
+    {
+        if ($this->referenceDocumentDescription->contains($documentDescription)) {
+            return;
+        }
+        $this->referenceDocumentDescription[] = $documentDescription;
+        return $this;
+    }
+
+
     public function __toString() {
         return
         ' [' . $this->id. '],' .
         ' [' . $this->classification. '],' .
-        ' [' . $this->classificationDate. '],' .
+        ' [' . ($this->classificationDate == null ? null : $this->classificationDate->format(Constants::XSD_DATETIME_FORMAT)) . '],' .
         ' [' . $this->classificationBy. '],' .
-        ' [' . $this->classificationDowngradedDate. '],' .
+        ' [' . ($this->classificationDowngradedDate == null ? null : $this->classificationDowngradedDate->format(Constants::XSD_DATETIME_FORMAT)) . '],' .
         ' [' . $this->classificationDowngradedBy. '],';
     }
 }

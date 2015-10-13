@@ -195,7 +195,7 @@ class DocumentDescription
      * name="f_pk_comment_id",
      * referencedColumnName="pk_comment_id"))
      */
-     protected $referenceComment;
+    protected $referenceComment;
 
     public function __construct()
     {

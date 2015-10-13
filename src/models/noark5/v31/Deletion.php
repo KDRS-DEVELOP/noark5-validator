@@ -1,6 +1,6 @@
 <?php
 
-
+use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @Entity @Table(name="deletion")
  **/
@@ -29,7 +29,11 @@ class Deletion
     /** @OneToMany(targetEntity="DocumentDescription", mappedBy="referenceDeletion", fetch="EXTRA_LAZY") **/
     protected $referenceDocumentDescription;
 
-    public function __construct(){}
+    public function __construct()
+    {
+        $this->referenceDocumentDescription = new ArrayCollection();
+        $this->referenceSeries = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -80,6 +84,15 @@ class Deletion
         return $this;
     }
 
+    public function addReferenceSeries($series)
+    {
+        if ($this->referenceSeries->contains($series)) {
+            return;
+        }
+        $this->referenceSeries[] = $series;
+        return $this;
+    }
+
     public function getReferenceDocumentDescription()
     {
         return $this->referenceDocumentDescription;
@@ -91,11 +104,20 @@ class Deletion
         return $this;
     }
 
+    public function addReferenceDocumentDescription($documentDescription)
+    {
+        if ($this->referenceDocumentDescription->contains($documentDescription)) {
+            return;
+        }
+        $this->referenceDocumentDescription[] = $documentDescription;
+        return $this;
+    }
+
     public function __toString() {
         return ' [' . $this->id. '],' .
         ' [' . $this->deletionType. '],' .
         ' [' . $this->deletionBy. '],' .
-        ' [' . $this->deletionDate. '],' .
+        ' [' . ($this->deletionDate == null ? null : $this->deletionDate->format(Constants::XSD_DATETIME_FORMAT)) . '],' .
         ' [' . $this->referenceSeries. '],' .
         ' [' . $this->referenceDocumentDescription. '],';
 

@@ -30,8 +30,17 @@ class ArkivstrukturDBImporter extends ArkivstrukturParser
      * or keyword, the duplicate values will be added into
      * the database. We can consider searching for the key word first
      *
+     * ORM references are handles as follows:
+     *
+     * 1:1
+     *
+     * 1:M References are added to the many-side
+     *
+     * M:M References are added to both sides. The FROM-entity will always
+     * set the reference to the TO-entity
      *
      */
+
     // Used to handle the referanseArkivdel under File/Record/DocumentDescription
     protected $currentSeries;
 
@@ -68,7 +77,7 @@ class ArkivstrukturDBImporter extends ArkivstrukturParser
 
     public function preProcessClassified()
     {
-        //TODO: UNCOMMENT THIS $this->preProcessNoarkObject("Classified");
+        $this->preProcessNoarkObject("Classified");
     }
 
     public function preProcessClass()
@@ -123,7 +132,7 @@ class ArkivstrukturDBImporter extends ArkivstrukturParser
 
     public function preProcessElectronicSignature()
     {
-        //$this->preProcessNoarkObject("ElectronicSignature");
+        // $this->preProcessNoarkObject("ElectronicSignature");
     }
 
     public function preProcessFile($classType)
@@ -197,28 +206,6 @@ class ArkivstrukturDBImporter extends ArkivstrukturParser
             throw new Exception(Constants::STACK_ERROR . __METHOD__ . ". Expected CaseParty found " . get_class(end($this->stack)));
         }
     }
-
-    public function postProcessClassificationSystem()
-    {
-        if ($this->checkObjectClassTypeCorrect("ClassificationSystem") === true) {
-
-            $parentObject = prev($this->stack);
-            $classificationSystem = end($this->stack);
-
-            if (get_class($parentObject) === "Series") {
-                // Associate this ClassificationSystem with the parent Series
-                // Series:ClassificationSystem is M:M
-                // Two-way reference is set in addReferenceClassificationSystem
-                $parentObject->addReferenceClassificationSystem($classificationSystem);
-            } else {
-                throw new Exception("Incorrect parent object to ClassificationSystem. Got " . get_class($parentObject), null, null);
-            }
-            $this->logger->trace('Updated a ' . get_class(end($this->stack)) . ' [' . end($this->stack) . ']');
-        } else {
-            throw new Exception(Constants::STACK_ERROR . __METHOD__ . ". Expected ClassificationSystem found " . get_class(end($this->stack)));
-        }
-    }
-
     public function postProcessClass()
     {
         if ($this->checkObjectClassTypeCorrect("Klass") === true) {
@@ -251,32 +238,55 @@ class ArkivstrukturDBImporter extends ArkivstrukturParser
             $parentObject = prev($this->stack);
             $classified = end($this->stack);
 
-
-        /*    You have to set the reference on the many side, so this is wrong
-            It is 1:M gradering:object, but in practice will be 1:
-            $classified->setReferenceSeries
-            $classified->addReferenceSeries if we kept in memory, the actual gradering
-
-            if (get_class($parentObject) === 'Series' ||
-                get_class($parentObject) === 'File' ||
-                get_class($parentObject) === 'Klass' ||
-                get_class($parentObject) === 'Record' ||
-                get_class($parentObject) === 'DocumentDescription') {
-                    // Associate this Classified with the parent Series | File | Klass | Record | DocumentDescription
-                    // Object:Classified is 1:M
-                    $parentObject->setReferenceClassified($classified);
+            if (get_class($parentObject) === 'Series') {
+                // Associate this Classified with the parent Series
+                // Classified:Series is 1:M
+                $classified->addReferenceSeries($parentObject);
+            } elseif (get_class($parentObject) === 'File') {
+                // Associate this Classified with the parent File
+                // Classified:File is 1:M
+                $classified->addReferenceFile($parentObject);
+            } elseif (get_class($parentObject) === 'Klass') {
+                // Associate this Classified with the parent Klass
+                // Classified:Klass is 1:M
+                $classified->addReferenceRecord($parentObject);
+            } elseif (get_class($parentObject) === 'Record') {
+                // Associate this Classified with the parent Record
+                // Classified:Record is 1:M
+                $classified->addReferenceDocumentDescription($parentObject);
+            } elseif (get_class($parentObject) === 'DocumentDescription') {
+                // Associate this Classified with the parent DocumentDescription
+                // Classified:DocumentDescription is 1:M
+                $classified->addReferenceSeries($parentObject);
             } else {
                 throw new Exception("Unknown parent object to Classified. Got " . get_class($parentObject), null, null);
             }
-
             $this->logger->trace('Updated a ' . get_class(end($this->stack)) . ' [' . end($this->stack) . ']');
-            */
         } else {
             throw new Exception(Constants::STACK_ERROR . __METHOD__ . ". Expected Classified found " . get_class(end($this->stack)));
         }
     }
 
+    public function postProcessClassificationSystem()
+    {
+        if ($this->checkObjectClassTypeCorrect("ClassificationSystem") === true) {
 
+            $parentObject = prev($this->stack);
+            $classificationSystem = end($this->stack);
+
+            if (get_class($parentObject) === "Series") {
+                // Associate this ClassificationSystem with the parent Series
+                // Series:ClassificationSystem is M:M
+                // Two-way reference is set in addReferenceClassificationSystem
+                $parentObject->addReferenceClassificationSystem($classificationSystem);
+            } else {
+                throw new Exception("Incorrect parent object to ClassificationSystem. Got " . get_class($parentObject), null, null);
+            }
+            $this->logger->trace('Updated a ' . get_class(end($this->stack)) . ' [' . end($this->stack) . ']');
+        } else {
+            throw new Exception(Constants::STACK_ERROR . __METHOD__ . ". Expected ClassificationSystem found " . get_class(end($this->stack)));
+        }
+    }
 
     // Note that due linear processing, we do not
     // keep earlier comments in memory. This reduces the
@@ -321,6 +331,7 @@ class ArkivstrukturDBImporter extends ArkivstrukturParser
             if (get_class($parentObject) === "DocumentObject") {
                 // Associate this Conversion with the parent DocumentObject
                 // DocumentObject:Conversion is 1:M
+                $conversion->addReferenceDocumentObject();
                 $parentObject->addReferenceConversion($conversion);
             } else {
                 throw new Exception("Unknown parent object to Conversion. Got " . get_class($parentObject), null, null);
@@ -356,10 +367,8 @@ class ArkivstrukturDBImporter extends ArkivstrukturParser
             $parentObject = prev($this->stack);
             $crossReference = end($this->stack);
 
-            if (get_class($parentObject) === "Klass" ||
-                get_class($parentObject) === "File" ||
-                get_class($parentObject) === "BasicRecord") {
-                // Associate this CrossReference with the parent Class | File |  BasicRecord
+            if (get_class($parentObject) === "Klass" || get_class($parentObject) === "File" || get_class($parentObject) === "BasicRecord") {
+                // Associate this CrossReference with the parent Class | File | BasicRecord
                 // Object:CrossReference is 1:M
                 $parentObject->addReferenceCrossReference($crossReference);
             } else {
@@ -377,17 +386,20 @@ class ArkivstrukturDBImporter extends ArkivstrukturParser
             $parentObject = prev($this->stack);
             $deletion = end($this->stack);
 
-            if (get_class($parentObject) === "DocumentDescription" ||
-                get_class($parentObject) === "Series") {
-                    // Associate this Deletion with the parent DocumentDescription | Series
-                    // Object:Deletion is 1:M
-                    $parentObject->addReferenceDeletion($crossReference);
-                } else {
-                    throw new Exception("Unknown parent object to Deletion. Got " . get_class($parentObject), null, null);
-                }
-                $this->logger->trace('Updated a ' . get_class(end($this->stack)) . ' [' . end($this->stack) . ']');
+            if (get_class($parentObject) === "Series") {
+                // Associate this Deletion with the parent Series
+                // Series:Deletion is 1:M
+                $deletion->addReferenceSeries($parentObject);
+            } elseif (get_class($parentObject) === "DocumentDescription") {
+                // Associate this Deletion with the parent DocumentDescription
+                // Series:DocumentDescription is 1:M
+                $deletion->addReferenceDocumentDescription($parentObject);
+            } else {
+                throw new Exception("Unknown parent object to Deletion. Got " . get_class($parentObject), null, null);
+            }
+            $this->logger->trace('Updated a ' . get_class(end($this->stack)) . ' [' . end($this->stack) . ']');
         } else {
-            throw new Exception(Constants::STACK_ERROR . __METHOD__ . ". Expected CrossReference found " . get_class(end($this->stack)));
+            throw new Exception(Constants::STACK_ERROR . __METHOD__ . ". Expected Deletion found " . get_class(end($this->stack)));
         }
     }
 
@@ -544,8 +556,7 @@ class ArkivstrukturDBImporter extends ArkivstrukturParser
                 // Two-way reference is set in addReferencePrecedence
                 $parentObject->addReferencePrecedence($precedence);
                 $this->logger->trace('Updated a ' . get_class(end($this->stack)) . ' [' . end($this->stack) . ']');
-            }
-            else {
+            } else {
                 throw new Exception("Incorrect parent object to Precedence. Got " . get_class($parentObject), null, null);
             }
             $this->entityManager->flush();
@@ -766,7 +777,6 @@ class ArkivstrukturDBImporter extends ArkivstrukturParser
         $this->entityManager->flush();
         $this->logger->trace('Merging updated storageLocation to database. Method (' . __METHOD__ . ')' . $storageLocation);
     }
-
 
     public function detachFileAndAllUnder($file)
     {

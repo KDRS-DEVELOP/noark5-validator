@@ -13,12 +13,12 @@
 
     $conn = array(
         'driver' => 'pdo_mysql',
-        'user' => 'root',
-        'host' => '127.0.0.1',
-        'password' => 'techno23',
+        'user' => 'elarkiv',
+        'host' => 'localhost',
+        'password' => 'elarkiv2015',
         'charset' => 'utf8',
         'driverOptions' => array(1002=>'SET NAMES utf8'),
-        'dbname' => 'tildatabase'
+        'dbname' => 'n5_validator'
     );
 
     $entityManager = EntityManager::create($conn, $config);
